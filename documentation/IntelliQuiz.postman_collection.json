@@ -1,0 +1,55 @@
+{
+  "info": {
+    "name": "IntelliQuiz Backend",
+    "_postman_id": "12345678-aaaa-bbbb-cccc-1234567890ab",
+    "description": "Collection for IntelliQuiz APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth - Register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"student1\",\n  \"email\": \"student1@test.com\",\n  \"password\": \"password123\",\n  \"role\": [\"student\"]\n}"
+        },
+        "url": { "raw": "http://localhost:8080/auth/register", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["auth", "register"] }
+      }
+    },
+    {
+      "name": "Auth - Login",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"student1\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": { "raw": "http://localhost:8080/auth/login", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["auth", "login"] }
+      }
+    },
+    {
+      "name": "Quiz - Dummy",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:8080/quiz/test", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["quiz", "test"] }
+      }
+    },
+    {
+      "name": "Analytics - Student",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:8080/analytics/student/1", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["analytics", "student", "1"] }
+      }
+    },
+    {
+      "name": "Classroom - List",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "http://localhost:8080/classroom/list", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["classroom", "list"] }
+      }
+    }
+  ]
+}
