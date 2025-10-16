@@ -45,10 +45,26 @@ public class JwtUtils {
         try{
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(authToken);
             return true;
-        }
-        catch(JwtException e){
-            //log
+        } catch (ExpiredJwtException e) {
+            System.err.println("🔒 JWT expired: " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            System.err.println("🔒 Unsupported JWT: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            System.err.println("🔒 Malformed JWT: " + e.getMessage());
+        } catch (SignatureException e) {
+            System.err.println("🔒 Invalid JWT signature: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.err.println("🔒 JWT claims string is empty: " + e.getMessage());
         }
         return false;
     }
+    public String generateTokenFromUsername(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
 }

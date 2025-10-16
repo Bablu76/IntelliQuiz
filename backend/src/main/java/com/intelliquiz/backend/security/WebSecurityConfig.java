@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,30 +44,49 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                // Disable CSRF for APIs and enable CORS
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // Stateless JWT session
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+                // Authorization rules
                 .authorizeHttpRequests(authz -> authz
+                        // Public endpoints
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/error", "/actuator/**").permitAll()
+
+                        // Quiz endpoints → any authenticated user
+                        .requestMatchers("/quiz/**").hasAnyRole("STUDENT", "TEACHER", "ADMIN")
+
+                        // Student analytics → all authenticated roles
+                        .requestMatchers("/analytics/student/**").hasAnyRole("STUDENT", "TEACHER", "ADMIN")
+
+                        // Classroom analytics → teachers & admins only
+                        .requestMatchers("/analytics/classroom/**").hasAnyRole("TEACHER", "ADMIN")
+
+                        // Role-specific endpoints
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/student/**").hasRole("STUDENT")
+
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 );
 
+        // Add JWT filter before UsernamePasswordAuthenticationFilter
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
-
-    // ✅ Explicit CORS config for frontend integration
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*")); // 🔒 replace * with your frontend domain in production
+        config.setAllowedOriginPatterns(List.of("http://localhost:5173")); // 🔒 Replace with prod domain
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -1,0 +1,153 @@
+2025-10-14T09:53:53.058+05:30  INFO 1484 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 1484 (C:\Shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\Shared\Projects\IntelliQuiz\backend)
+2025-10-14T09:53:53.068+05:30 DEBUG 1484 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
+2025-10-14T09:53:53.070+05:30  INFO 1484 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-10-14T09:53:54.248+05:30  INFO 1484 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-14T09:53:54.424+05:30  INFO 1484 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 161 ms. Found 4 JPA repository interfaces.
+2025-10-14T09:53:55.155+05:30  INFO 1484 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-14T09:53:55.172+05:30  INFO 1484 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-14T09:53:55.172+05:30  INFO 1484 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-10-14T09:53:55.249+05:30  INFO 1484 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-14T09:53:55.250+05:30  INFO 1484 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2086 ms
+2025-10-14T09:53:55.452+05:30  INFO 1484 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-14T09:53:55.590+05:30  INFO 1484 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-10-14T09:53:55.642+05:30  INFO 1484 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-14T09:53:56.048+05:30  INFO 1484 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-14T09:53:56.103+05:30  INFO 1484 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-14T09:53:56.474+05:30  INFO 1484 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-14T09:53:56.542+05:30  WARN 1484 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-14T09:53:56.564+05:30  INFO 1484 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.10
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-10-14T09:53:57.791+05:30  INFO 1484 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-14T09:53:58.274+05:30  INFO 1484 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-14T09:53:58.988+05:30 DEBUG 1484 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
+2025-10-14T09:53:59.152+05:30  INFO 1484 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-10-14T09:53:59.265+05:30  WARN 1484 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-14T09:54:01.859+05:30  INFO 1484 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-14T09:54:01.894+05:30  INFO 1484 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 9.579 seconds (process running for 10.134)
+2025-10-14T09:54:18.486+05:30  INFO 1484 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-14T09:54:18.486+05:30  INFO 1484 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-14T09:54:18.487+05:30  INFO 1484 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-10-14T09:54:18.717+05:30  INFO 1484 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Tuser
+2025-10-14T09:54:18.945+05:30  INFO 1484 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : ✅ Authentication successful for Tuser
+2025-10-14T09:54:18.947+05:30 DEBUG 1484 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : 👤 Roles for Tuser: [ROLE_TEACHER]
+2025-10-14T09:54:19.032+05:30 DEBUG 1484 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : 🎫 Access token generated for Tuser
+2025-10-14T09:54:19.117+05:30  INFO 1484 --- [backend] [http-nio-8080-exec-2] c.i.b.s.services.RefreshTokenService     : 💾 Refresh token updated for user 'Tuser' [expires: 2025-10-21T04:24:19.111023300Z]
+2025-10-14T09:54:19.162+05:30 DEBUG 1484 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : ♻️ Refresh token created for Tuser
+2025-10-14T09:54:45.635+05:30  INFO 1484 --- [backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-14T09:54:45.733+05:30  INFO 1484 --- [backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-14T09:54:45.738+05:30  INFO 1484 --- [backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-14T09:54:45.744+05:30  INFO 1484 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-10-14T09:54:45.748+05:30  INFO 1484 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-10-14T09:58:45.975+05:30  INFO 16476 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 16476 (C:\Shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\Shared\Projects\IntelliQuiz\backend)
+2025-10-14T09:58:45.977+05:30 DEBUG 16476 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
+2025-10-14T09:58:45.978+05:30  INFO 16476 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-10-14T09:58:46.820+05:30  INFO 16476 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-14T09:58:46.903+05:30  INFO 16476 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 74 ms. Found 4 JPA repository interfaces.
+2025-10-14T09:58:47.629+05:30  INFO 16476 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-14T09:58:47.641+05:30  INFO 16476 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-14T09:58:47.642+05:30  INFO 16476 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-10-14T09:58:47.710+05:30  INFO 16476 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-14T09:58:47.710+05:30  INFO 16476 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1680 ms
+2025-10-14T09:58:47.894+05:30  INFO 16476 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-14T09:58:47.973+05:30  INFO 16476 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-10-14T09:58:48.026+05:30  INFO 16476 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-14T09:58:48.363+05:30  INFO 16476 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-14T09:58:48.405+05:30  INFO 16476 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-14T09:58:48.587+05:30  INFO 16476 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-14T09:58:48.621+05:30  WARN 16476 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-14T09:58:48.642+05:30  INFO 16476 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.10
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-10-14T09:58:49.571+05:30  INFO 16476 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-14T09:58:49.910+05:30  INFO 16476 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-14T09:58:50.267+05:30 DEBUG 16476 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
+2025-10-14T09:58:50.363+05:30  INFO 16476 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-10-14T09:58:50.423+05:30  WARN 16476 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-14T09:58:51.008+05:30  INFO 16476 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-14T09:58:51.018+05:30  INFO 16476 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 5.739 seconds (process running for 6.268)
+2025-10-14T09:59:30.283+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-14T09:59:30.284+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-14T09:59:30.291+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 6 ms
+2025-10-14T09:59:30.812+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Suser
+2025-10-14T09:59:31.117+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : ✅ Authentication successful for Suser
+2025-10-14T09:59:31.119+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : 👤 Roles for Suser: [ROLE_STUDENT]
+2025-10-14T09:59:31.179+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : 🎫 Access token generated for Suser
+2025-10-14T09:59:31.295+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-1] c.i.b.s.services.RefreshTokenService     : 💾 Refresh token updated for user 'Suser' [expires: 2025-10-21T04:29:31.289218700Z]
+2025-10-14T09:59:31.334+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : ♻️ Refresh token created for Suser
+2025-10-14T09:59:31.780+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.AnalyticsController     : 📊 [STUDENT_ANALYTICS-DEMO] No quiz attempts found for user 1 → returning mock data
+2025-10-14T09:59:49.126+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : 🎯 Generating quiz | Topic: General Knowledge | Difficulty: medium
+2025-10-14T09:59:49.129+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : 📚 Prepared 5 total questions for topic 'General Knowledge' [medium]
+2025-10-14T09:59:49.130+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : 🧩 Generated 5 mock questions for topic 'General Knowledge' with difficulty 'medium'
+2025-10-14T09:59:53.996+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.AnalyticsController     : 📊 [STUDENT_ANALYTICS-DEMO] No quiz attempts found for user 1 → returning mock data
+2025-10-14T10:00:14.122+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Tuser
+2025-10-14T10:00:14.274+05:30  WARN 16476 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : ❌ Invalid credentials for Tuser
+2025-10-14T10:00:19.474+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Tuser
+2025-10-14T10:00:19.615+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : ✅ Authentication successful for Tuser
+2025-10-14T10:00:19.616+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : 👤 Roles for Tuser: [ROLE_TEACHER]
+2025-10-14T10:00:19.620+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : 🎫 Access token generated for Tuser
+2025-10-14T10:00:19.629+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-3] c.i.b.s.services.RefreshTokenService     : 💾 Refresh token updated for user 'Tuser' [expires: 2025-10-21T04:30:19.628095Z]
+2025-10-14T10:00:19.644+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : ♻️ Refresh token created for Tuser
+2025-10-14T10:01:06.922+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Admin
+2025-10-14T10:01:07.063+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.AuthController    : ✅ Authentication successful for Admin
+2025-10-14T10:01:07.064+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.AuthController    : 👤 Roles for Admin: [ROLE_ADMIN]
+2025-10-14T10:01:07.071+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.AuthController    : 🎫 Access token generated for Admin
+2025-10-14T10:01:07.080+05:30  INFO 16476 --- [backend] [http-nio-8080-exec-5] c.i.b.s.services.RefreshTokenService     : 💾 Refresh token updated for user 'Admin' [expires: 2025-10-21T04:31:07.080169600Z]
+2025-10-14T10:01:07.097+05:30 DEBUG 16476 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.AuthController    : ♻️ Refresh token created for Admin
+2025-10-14T10:02:03.342+05:30  INFO 16476 --- [backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-14T10:02:03.504+05:30  INFO 16476 --- [backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-14T10:02:03.519+05:30  INFO 16476 --- [backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-14T10:02:03.554+05:30  INFO 16476 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-10-14T10:02:03.563+05:30  INFO 16476 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-10-14T14:35:37.434+05:30  INFO 20704 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 20704 (C:\Shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\Shared\Projects\IntelliQuiz\backend)
+2025-10-14T14:35:37.440+05:30 DEBUG 20704 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
+2025-10-14T14:35:37.441+05:30  INFO 20704 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-10-14T14:35:39.069+05:30  INFO 20704 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-14T14:35:39.244+05:30  INFO 20704 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 155 ms. Found 4 JPA repository interfaces.
+2025-10-14T14:35:40.517+05:30  INFO 20704 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-10-14T14:35:40.549+05:30  INFO 20704 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-10-14T14:35:40.549+05:30  INFO 20704 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-10-14T14:35:40.666+05:30  INFO 20704 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-10-14T14:35:40.667+05:30  INFO 20704 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3090 ms
+2025-10-14T14:35:41.013+05:30  INFO 20704 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-14T14:35:41.184+05:30  INFO 20704 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-10-14T14:35:41.260+05:30  INFO 20704 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-10-14T14:35:41.860+05:30  INFO 20704 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-14T14:35:41.938+05:30  INFO 20704 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-10-14T14:35:42.368+05:30  INFO 20704 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-10-14T14:35:42.447+05:30  WARN 20704 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-14T14:35:42.477+05:30  INFO 20704 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.10
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-10-14T14:35:44.316+05:30  INFO 20704 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-14T14:35:44.828+05:30  INFO 20704 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-14T14:35:45.564+05:30 DEBUG 20704 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
+2025-10-14T14:35:45.764+05:30  INFO 20704 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-10-14T14:35:45.914+05:30  WARN 20704 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-14T14:35:47.111+05:30  INFO 20704 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-10-14T14:35:47.127+05:30  INFO 20704 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 10.816 seconds (process running for 11.967)
+2025-10-14T14:38:52.072+05:30  INFO 20704 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-14T14:38:52.073+05:30  INFO 20704 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-10-14T14:38:52.075+05:30  INFO 20704 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-10-14T14:38:52.365+05:30  INFO 20704 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Tuser
+2025-10-14T14:38:52.688+05:30  WARN 20704 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : ❌ Invalid credentials for Tuser
+2025-10-14T14:39:49.520+05:30  INFO 20704 --- [backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-10-14T14:39:49.622+05:30  INFO 20704 --- [backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-10-14T14:39:49.629+05:30  INFO 20704 --- [backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-14T14:39:49.634+05:30  INFO 20704 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-10-14T14:39:49.658+05:30  INFO 20704 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
