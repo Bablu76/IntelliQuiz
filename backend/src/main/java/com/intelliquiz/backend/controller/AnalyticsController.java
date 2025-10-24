@@ -1,28 +1,21 @@
 package com.intelliquiz.backend.controller;
 
-import com.intelliquiz.backend.model.QuizAttempt;
-import com.intelliquiz.backend.model.User;
 import com.intelliquiz.backend.repository.UserRepository;
 import com.intelliquiz.backend.security.services.AnalyticsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-/**
- * 📊 AnalyticsController
- * Generates real analytics data from QuizAttemptRepository.
- * Uses SLF4J logging for structured, production-grade monitoring.
- */
+@Slf4j
 @RestController
 @RequestMapping("/analytics")
 @CrossOrigin(origins = "http://localhost:5173")
 public class AnalyticsController {
-
-    private static final Logger log = LoggerFactory.getLogger(AnalyticsController.class);
 
     private final AnalyticsService analyticsService;
     private final UserRepository userRepository;
@@ -32,119 +25,79 @@ public class AnalyticsController {
         this.userRepository = userRepository;
     }
 
+    // ==============================
+    // 📊 Student Analytics Endpoint
+    // ==============================
+
     /**
-     * Get analytics data for a student (real data).
+     * Returns analytics data (average, accuracy, badges, points, trend)
+     * for a given student ID.
      */
     @GetMapping("/student/{id}")
-    public ResponseEntity<Map<String, Object>> getStudentAnalytics(@PathVariable Long id) {
-        long startTime = System.currentTimeMillis();
+    public ResponseEntity<?> getStudentAnalytics(@PathVariable Long id) {
+        log.info("📊 GET /analytics/student/{}", id);
+        try {
+            if (!userRepository.existsById(id)) {
+                log.warn("⚠️ No user found with ID {}", id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "User not found", "userId", id));
+            }
 
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) {
-            log.warn("⚠️ No user found with ID {}", id);
-            return ResponseEntity.badRequest().body(Map.of(
-                    "error", "No user found",
-                    "studentId", id,
-                    "accuracy", "0%",
-                    "totalQuizzes", 0,
-                    "badges", List.of("Unregistered User"),
-                    "trend", List.of()
-            ));
+            Map<String, Object> analytics = analyticsService.getStudentAnalytics(id);
+            return ResponseEntity.ok(analytics);
+
+        } catch (Exception e) {
+            log.error("❌ Error fetching analytics for user {}: {}", id, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error while fetching analytics data"));
         }
-
-        User user = optionalUser.get();
-        List<QuizAttempt> attempts = analyticsService.getAttemptsByUser(user);
-
-        // ✅ DEMO FALLBACK — show mock data if student has no attempts
-        if (attempts.isEmpty()) {
-            log.info("📊 [STUDENT_ANALYTICS-DEMO] No quiz attempts found for user {} → returning mock data", id);
-            Map<String, Object> demoAnalytics = Map.of(
-                    "studentId", id,
-                    "accuracy", "78%",
-                    "totalQuizzes", 5,
-                    "badges", List.of("Consistent Performer", "Fast Learner"),
-                    "trend", List.of(65, 70, 75, 80, 85)
-            );
-            return ResponseEntity.ok(demoAnalytics);
-        }
-
-        // 🧮 Real analytics path
-        double avgScore = analyticsService.calculateAverageScore(user);
-        int totalQuizzes = attempts.size();
-
-        // Last 5 scores (trend)
-        List<Integer> trend = attempts.stream()
-                .sorted(Comparator.comparing(QuizAttempt::getAttemptedAt))
-                .map(QuizAttempt::getScore)
-                .skip(Math.max(0, attempts.size() - 5))
-                .collect(Collectors.toList());
-
-        // Assign badges
-        List<String> badges = new ArrayList<>();
-        if (avgScore >= 80) badges.add("Sharp Thinker");
-        if (avgScore >= 90) badges.add("Quiz Master");
-        if (totalQuizzes >= 10) badges.add("Persistent Learner");
-        if (badges.isEmpty()) badges.add("Rookie");
-
-        Map<String, Object> analytics = new HashMap<>();
-        analytics.put("studentId", id);
-        analytics.put("accuracy", String.format("%.0f%%", avgScore));
-        analytics.put("totalQuizzes", totalQuizzes);
-        analytics.put("badges", badges);
-        analytics.put("trend", trend);
-
-        log.info("📈 [STUDENT_ANALYTICS] User ID={} | AvgScore={} | Quizzes={} | Duration={}ms",
-                id, avgScore, totalQuizzes, System.currentTimeMillis() - startTime);
-
-        return ResponseEntity.ok(analytics);
     }
 
+    // ==============================
+    // 🏆 Global Leaderboard Endpoint
+    // ==============================
 
     /**
-     * Get leaderboard data for a classroom (real + mock hybrid).
-     * Later this can pull from a ClassroomRepository.
+     * Returns leaderboard data — top N users sorted by points.
+     * Query param `limit` defines number of entries (default 10).
+     */
+    @GetMapping("/leaderboard")
+    public ResponseEntity<?> getLeaderboard(@RequestParam Optional<Integer> limit) {
+        int topLimit = limit.orElse(10);
+        log.info("🏆 GET /analytics/leaderboard?limit={}", topLimit);
+        try {
+            List<Map<String, Object>> leaderboard = analyticsService.getLeaderboard(topLimit);
+            return ResponseEntity.ok(leaderboard);
+        } catch (Exception e) {
+            log.error("❌ Error generating leaderboard: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Error while generating leaderboard"));
+        }
+    }
+
+    // ==============================
+    // 🏫 Classroom Leaderboard (Demo)
+    // ==============================
+
+    /**
+     * Retained demo endpoint — placeholder until Classroom entity is active.
      */
     @GetMapping("/classroom/{id}")
-    public ResponseEntity<List<Map<String, Object>>> getClassroomLeaderboard(@PathVariable Long id) {
-        long startTime = System.currentTimeMillis();
-
-        // For MVP: list all users with their avg scores (mock classroom)
-        List<User> users = userRepository.findAll();
-
-        List<Map<String, Object>> leaderboard = users.stream()
-                .map(user -> {
-                    // compute average and convert safely to int (rounded)
-                    double avg = analyticsService.calculateAverageScore(user);
-                    int scoreInt = (int) Math.round(avg);
-
-                    Map<String, Object> entry = new HashMap<>();
-                    entry.put("studentName", user.getUsername());
-                    entry.put("score", scoreInt);
-                    return entry;
-                })
-                // sort descending by score
-                .sorted(Comparator.<Map<String, Object>>comparingInt(m -> (Integer) m.get("score")).reversed())
-                .limit(10)
-                .collect(Collectors.toList());
-
-
-        log.info("🏫 [LEADERBOARD] Classroom ID={} | Entries={} | Duration={}ms",
-                id, leaderboard.size(), System.currentTimeMillis() - startTime);
-
-        return ResponseEntity.ok(leaderboard);
+    public ResponseEntity<Map<String, Object>> getClassroomAnalytics(@PathVariable Long id) {
+        log.info("🏫 GET /analytics/classroom/{}", id);
+        return ResponseEntity.ok(analyticsService.getClassroomAnalytics(id));
     }
 
-    /**
-     * Example error case (for validation)
-     */
+    // ==============================
+    // 🧪 Test / Error Simulation
+    // ==============================
+
     @GetMapping("/error-demo/{id}")
     public ResponseEntity<?> simulateError(@PathVariable Long id) {
-        try {
-            if (id < 0) throw new IllegalArgumentException("Invalid student ID: " + id);
-            return ResponseEntity.ok(Map.of("status", "OK"));
-        } catch (Exception e) {
-            log.error("❌ [ANALYTICS_ERROR] ID={} | Message={}", id, e.getMessage(), e);
-            throw e; // handled by GlobalExceptionHandler
+        log.info("🧪 Simulating analytics error for ID {}", id);
+        if (id < 0) {
+            throw new IllegalArgumentException("Invalid student ID: " + id);
         }
+        return ResponseEntity.ok(Map.of("status", "OK"));
     }
 }

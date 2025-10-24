@@ -1,53 +1,113 @@
 package com.intelliquiz.backend.exception;
 
-import com.intelliquiz.backend.controller.AuthController;
-import com.intelliquiz.backend.repository.RoleRepository;
-import com.intelliquiz.backend.repository.UserRepository;
-import com.intelliquiz.backend.security.jwt.JwtUtils;
-import com.intelliquiz.backend.security.services.RefreshTokenService;
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.List;
+import java.util.Map;
 
-/**
- * ✅ Unit test for GlobalExceptionHandler + AuthController validation
- * This test isolates AuthController and mocks all external dependencies.
- */
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(controllers = AuthController.class)
-public class GlobalExceptionHandlerTest {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-    @Autowired
-    private MockMvc mockMvc;
+class GlobalExceptionHandlerTest {
 
-    // Mock all dependencies injected into AuthController
-    @MockBean private AuthenticationManager authenticationManager;
-    @MockBean private UserRepository userRepository;
-    @MockBean private RoleRepository roleRepository;
-    @MockBean private PasswordEncoder passwordEncoder;
-    @MockBean private JwtUtils jwtUtils;
-    @MockBean private RefreshTokenService refreshTokenService;
+    private GlobalExceptionHandler handler;
+
+    @BeforeEach
+    void setup() {
+        handler = new GlobalExceptionHandler();
+    }
 
     @Test
-    void whenInvalidSignup_thenValidationErrorsReturned() throws Exception {
-        // Prepare invalid JSON: missing username + invalid email + empty password
-        String invalidBody = "{\"username\":\"\",\"email\":\"bad\",\"password\":\"\"}";
+    void handleValidation_returns400WithFieldErrors() {
+        MethodArgumentNotValidException ex = mock(MethodArgumentNotValidException.class);
+        BindingResult bindingResult = mock(BindingResult.class);
+        FieldError error = mock(FieldError.class);
+        when(error.getField()).thenReturn("topic");
+        when(error.getDefaultMessage()).thenReturn("must not be empty");
+        when(bindingResult.getFieldErrors()).thenReturn(List.of(error));
+        when(ex.getBindingResult()).thenReturn(bindingResult);
 
-        mockMvc.perform(post("/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidBody))
-                .andExpect(status().isBadRequest())       // GlobalExceptionHandler returns 400
-                .andExpect(jsonPath("$.username").exists()) // Field-level error from validation
-                .andExpect(jsonPath("$.email").exists())
-                .andExpect(jsonPath("$.password").exists());
+        ResponseEntity<?> response = handler.handleValidation(ex);
+
+        assertThat(response.getStatusCodeValue()).isEqualTo(400);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> map = (Map<String, Object>) response.getBody();
+        assertThat(map.get("errorType")).isEqualTo("ValidationError");
+
+        // ✅ Explicitly cast "details" to a proper map to avoid wildcard capture issue
+        @SuppressWarnings("unchecked")
+        Map<String, String> details = (Map<String, String>) map.get("details");
+        assertThat(details).containsKey("topic");
+        assertThat(details.get("topic")).isEqualTo("must not be empty");
+    }
+
+
+
+
+    @Test
+    void handleTokenRefresh_returns400() {
+        TokenRefreshException ex = new TokenRefreshException("token123", "Refresh token expired");
+        ResponseEntity<?> response = handler.handleTokenRefreshException(ex);
+        assertThat(response.getStatusCodeValue()).isEqualTo(400);
+        assertThat(response.getBody().toString()).contains("TokenRefreshError");
+    }
+
+    @Test
+    void handleBadRequest_returns400() {
+        com.intelliquiz.backend.exception.BadRequestException ex = new BadRequestException("Only PDF files are allowed");
+        ResponseEntity<?> response = handler.handleBadRequest(ex);
+        assertThat(response.getStatusCodeValue()).isEqualTo(400);
+        assertThat(response.getBody().toString()).contains("Only PDF files are allowed");
+    }
+
+
+    @Test
+    void handleAccessDenied_returns403() {
+        AccessDeniedException ex = new AccessDeniedException("Access denied");
+        ResponseEntity<?> response = handler.handleAccessDenied(ex);
+        assertThat(response.getStatusCodeValue()).isEqualTo(403);
+        assertThat(response.getBody().toString()).contains("Access denied");
+    }
+
+    @Test
+    void handleEntityNotFound_returns404() {
+        EntityNotFoundException ex = new EntityNotFoundException("Resource not found");
+        ResponseEntity<?> response = handler.handleNotFound(ex);
+        assertThat(response.getStatusCodeValue()).isEqualTo(404);
+        assertThat(response.getBody().toString()).contains("Resource not found");
+    }
+
+    @Test
+    void handleFileTooLarge_returns413() {
+        MaxUploadSizeExceededException ex = new MaxUploadSizeExceededException(10_000L);
+        ResponseEntity<?> response = handler.handleFileTooLarge(ex);
+        assertThat(response.getStatusCodeValue()).isEqualTo(413);
+        assertThat(response.getBody().toString()).contains("FileTooLarge");
+    }
+
+    @Test
+    void handleRuntime_returns500() {
+        RuntimeException ex = new RuntimeException("Unexpected runtime");
+        ResponseEntity<?> response = handler.handleRuntime(ex);
+        assertThat(response.getStatusCodeValue()).isEqualTo(500);
+        assertThat(response.getBody().toString()).contains("RuntimeError");
+    }
+
+    @Test
+    void handleGenericException_returns500() {
+        Exception ex = new Exception("Something went wrong");
+        ResponseEntity<?> response = handler.handleAll(ex);
+        assertThat(response.getStatusCodeValue()).isEqualTo(500);
+        assertThat(response.getBody().toString()).contains("ServerError");
     }
 }
