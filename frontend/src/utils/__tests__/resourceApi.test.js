@@ -1,8 +1,9 @@
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import { uploadResource, listResources, deleteResource } from "../resourceApi";
+import api from "../api";
 
-const mock = new MockAdapter(axios);
+const mock = new MockAdapter(api);
 const dummyFile = new File(["pdf"], "notes.pdf", { type: "application/pdf" });
 
 describe("resourceApi", () => {

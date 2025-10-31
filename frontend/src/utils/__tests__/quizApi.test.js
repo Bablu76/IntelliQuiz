@@ -1,8 +1,9 @@
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import { generateQuiz, submitQuiz } from "../quizApi";
+import api from "../api";
 
-const mock = new MockAdapter(axios);
+const mock = new MockAdapter(api);
 
 describe("quizApi", () => {
   beforeEach(() => mock.reset());

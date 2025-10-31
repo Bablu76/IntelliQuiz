@@ -11,6 +11,8 @@ import Navbar from "./components/Navbar";
 import TeacherDashboard from "./pages/teacher/TeacherDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import StudentDashboard from "./pages/student/StudentDashboard";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Layout() {
   const location = useLocation();
@@ -81,5 +83,6 @@ function Layout() {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Layout />
+    <ToastContainer position="bottom-right" autoClose={3000} />
   </BrowserRouter>
 );

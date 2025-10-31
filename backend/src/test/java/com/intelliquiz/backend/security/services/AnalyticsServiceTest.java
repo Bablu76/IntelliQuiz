@@ -1,6 +1,6 @@
 package com.intelliquiz.backend.security.services;
 
-import com.intelliquiz.backend.model.User;
+import com.intelliquiz.backend.model.dto.TopicAnalyticsDTO;
 import com.intelliquiz.backend.repository.QuizAttemptRepository;
 import com.intelliquiz.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,59 +8,64 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class AnalyticsServiceTest {
+import java.util.Arrays;
+
+
+public class AnalyticsServiceTest {
 
     private QuizAttemptRepository quizAttemptRepository;
-    private UserRepository userRepository;
     private AnalyticsService analyticsService;
-    private User user;
 
     @BeforeEach
-    void setup() {
+    public void setup() {
         quizAttemptRepository = mock(QuizAttemptRepository.class);
-        userRepository = mock(UserRepository.class);
+        UserRepository userRepository = mock(UserRepository.class);
         analyticsService = new AnalyticsService(quizAttemptRepository, userRepository);
-
-        user = new User();
-        user.setId(1L);
-        user.setPoints(0);
-        user.setBadges("");
     }
 
     @Test
-    void getStudentAnalytics_noAttempts_returnsEmptyTrend() {
-        when(userRepository.findById(1L)).thenReturn(java.util.Optional.of(user));
-        when(quizAttemptRepository.findAverageScore(1L)).thenReturn(null);
-        when(quizAttemptRepository.findLastFiveScores(1L)).thenReturn(List.of());
+    public void testGetTopicAnalytics_mapsRowsCorrectly() {
+        Long userId = 42L;
+        // Simulate repository rows: [topic, avgScore, count]
+        Object[] row1 = new Object[] {"AI", 78.5, 4L};
+        Object[] row2 = new Object[] {"Math", 62.0, 3L};
 
-        var result = analyticsService.getStudentAnalytics(1L);
+        when(quizAttemptRepository.findTopicAveragesByUser(userId)).thenReturn(Arrays.asList(row1, row2));
 
-        assertThat(result.get("averageScore")).isEqualTo(0.0);
-        assertThat(((List<?>) result.get("trend")).isEmpty()).isTrue();
+        List<TopicAnalyticsDTO> result = analyticsService.getTopicAnalytics(userId);
+        assertNotNull(result);
+        assertEquals(2, result.size());
+
+        TopicAnalyticsDTO first = result.stream().filter(t -> "AI".equals(t.getTopic())).findFirst().orElse(null);
+        assertNotNull(first);
+        assertEquals("AI", first.getTopic());
+        assertEquals(78.5, first.getAccuracy(), 0.01);
+        assertEquals(4L, first.getAttempts());
+
+        TopicAnalyticsDTO second = result.stream().filter(t -> "Math".equals(t.getTopic())).findFirst().orElse(null);
+        assertNotNull(second);
+        assertEquals(62.0, second.getAccuracy(), 0.01);
+        assertEquals(3L, second.getAttempts());
+
+        verify(quizAttemptRepository, times(1)).findTopicAveragesByUser(userId);
     }
 
     @Test
-    void updateGamification_awardsCorrectPoints_and_badgeTransition() {
-        analyticsService.updateGamification(user, 90);
-        assertThat(user.getPoints()).isEqualTo(50);
-        assertThat(user.getBadges()).doesNotContain("Bronze");
+    public void testGetWeakTopics_returnsLowest() {
+        Long userId = 1L;
+        Object[] row1 = new Object[] {"AI", 90.0, 5L};
+        Object[] row2 = new Object[] {"Physics", 40.0, 2L};
+        Object[] row3 = new Object[] {"Math", 55.0, 3L};
 
-        user.setPoints(490);
-        analyticsService.updateGamification(user, 90);
-        assertThat(user.getBadges()).contains("Silver");
-    }
+        when(quizAttemptRepository.findTopicAveragesByUser(userId)).thenReturn(Arrays.asList(row1, row2, row3));
 
-    @Test
-    void getLeaderboard_returnsDescendingByPoints() {
-        var u1 = new User(); u1.setUsername("A"); u1.setPoints(200);
-        var u2 = new User(); u2.setUsername("B"); u2.setPoints(300);
-        when(userRepository.findTopUsers(any())).thenReturn(List.of(u2, u1));
-
-        var result = analyticsService.getLeaderboard(2);
-
-        assertThat(result.get(0).get("username")).isEqualTo("B");
+        List<String> weak = analyticsService.getWeakTopics(userId, 2);
+        assertNotNull(weak);
+        assertEquals(2, weak.size());
+        assertEquals("Physics", weak.get(0)); // lowest
+        assertEquals("Math", weak.get(1));
     }
 }

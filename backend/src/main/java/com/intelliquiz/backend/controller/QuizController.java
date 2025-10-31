@@ -13,10 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 🎯 QuizController
@@ -59,25 +57,79 @@ public class QuizController {
     }
 
     // ------------------ 2️⃣ Generate Quiz ------------------
-    @PostMapping("/generate")
-    public ResponseEntity<Map<String, Object>> generateQuiz(@RequestBody Map<String, String> request) {
-        String topic = request.getOrDefault("topic", "AI");
-        String difficulty = request.getOrDefault("difficulty", "medium");
+    // Add near other autowired services
+    @Autowired
+    private com.intelliquiz.backend.security.services.ContentQuizService contentQuizService;
 
-        log.info("🎯 Generating quiz | Topic: {} | Difficulty: {}", topic, difficulty);
+    @GetMapping("/generate")
+    public ResponseEntity<Map<String, Object>> generateQuiz(
+            @RequestParam(name = "topic", defaultValue = "General") String topic,
+            @RequestParam(name = "difficulty", defaultValue = "medium") String difficulty) {
 
-        List<Map<String, Object>> questions = generateMockQuestions(topic, difficulty);
+        log.info("🎯 /quiz/generate called | topic='{}' difficulty='{}'", topic, difficulty);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("topic", topic);
-        response.put("difficulty", difficulty);
-        response.put("questions", questions);
+        try {
+            List<Map<String, Object>> questions = contentQuizService.generateQuestionsFromTopic(topic, difficulty);
 
-        log.debug("🧩 Generated {} mock questions for topic '{}' [{}]",
-                questions.size(), topic, difficulty);
+            if (questions == null || questions.isEmpty()) {
+                // Friendly fallback — do not treat this as a 500
+                Map<String, Object> body = new HashMap<>();
+                body.put("topic", topic);
+                body.put("difficulty", difficulty);
+                body.put("message", "Sorry, we couldn't create a quiz for that topic. Try another one!");
+                body.put("questions", Collections.emptyList());
+                log.info("⚠️ No questions generated for topic '{}'. Returning friendly fallback.", topic);
+                return ResponseEntity.ok(body);
+            }
 
-        return ResponseEntity.ok(response);
+            Map<String, Object> resp = new HashMap<>();
+            resp.put("topic", topic);
+            resp.put("difficulty", difficulty);
+            resp.put("questions", questions);
+
+            log.info("✅ Generated {} questions for topic '{}'", questions.size(), topic);
+            return ResponseEntity.ok(resp);
+
+        } catch (Exception e) {
+            log.error("❌ Unexpected error in /quiz/generate: {}", e.getMessage(), e);
+            Map<String, Object> body = new HashMap<>();
+            body.put("topic", topic);
+            body.put("difficulty", difficulty);
+            body.put("message", "Sorry, we couldn't create a quiz for that topic. Try another one!");
+            body.put("questions", Collections.emptyList());
+            return ResponseEntity.ok(body);
+        }
     }
+
+    @GetMapping("/attempts/{userId}")
+    public ResponseEntity<?> getUserAttempts(@PathVariable Long userId) {
+        try {
+            List<QuizAttempt> attempts = quizAttemptRepository.findByUserId(userId);
+
+            if (attempts == null || attempts.isEmpty()) {
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+
+            // ✅ Map to lightweight DTOs for frontend
+            List<Map<String, Object>> dtoList = attempts.stream().map(a -> {
+                Map<String, Object> map = new HashMap<>();
+                map.put("id", a.getId());
+                map.put("topic", a.getTopic());
+                map.put("score", a.getScore());
+                map.put("date", a.getCreatedAt() != null ? a.getCreatedAt().toString() : "N/A");
+                return map;
+            }).collect(Collectors.toList());
+
+
+            return ResponseEntity.ok(dtoList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Failed to fetch quiz attempts", "details", e.getMessage()));
+        }
+    }
+
 
     // ------------------ 3️⃣ Submit Quiz ------------------
     @PostMapping("/submit")
@@ -156,11 +208,13 @@ public class QuizController {
             Map<String, Object> response = new HashMap<>();
             response.put("userId", userId);
             response.put("scorePercentage", percentageScore);
+            response.put("score", percentageScore);
             response.put("correctAnswers", correctCount);
             response.put("totalQuestions", totalQuestions);
             response.put("nextLevel", nextLevel);
             response.put("difficultyUsed", difficulty);
             response.put("topic", topic);
+
 
             log.debug("📊 Response prepared for user {}: {}", userId, response);
             return ResponseEntity.ok(response);

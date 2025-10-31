@@ -25,4 +25,15 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
     // 📈 Fetch last five scores (for performance trend)
     @Query("SELECT q.score FROM QuizAttempt q WHERE q.user.id = :userId ORDER BY q.createdAt DESC")
     List<Integer> findLastFiveScores(@Param("userId") Long userId);
+
+    @Query("SELECT q.score FROM QuizAttempt q WHERE q.user.id = :userId ORDER BY q.createdAt DESC")
+    List<Integer> findLastScoresByUser(@Param("userId") Long userId);
+
+    List<QuizAttempt> findByUserId(Long userId);
+
+    @Query("SELECT qa.topic, AVG(qa.score), COUNT(qa) FROM QuizAttempt qa WHERE qa.user.id = :userId GROUP BY qa.topic")
+    List<Object[]> findTopicAveragesByUser(@Param("userId") Long userId);
+
+
+
 }

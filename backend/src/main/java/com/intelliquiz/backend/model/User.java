@@ -1,5 +1,6 @@
 package com.intelliquiz.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties({"password", "quizAttempts", "roles"})
 public class User {
 
     // ==============================

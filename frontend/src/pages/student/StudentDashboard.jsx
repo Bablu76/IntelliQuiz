@@ -1,186 +1,292 @@
 import React, { useState, useEffect, useRef } from "react";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import useAuth from "../../hooks/useAuth";
 import ResourceUpload from "../../components/ResourceUpload";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function StudentDashboard() {
   const { fetchWithAuth, userId, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState("performance");
+  const [activeTab, setActiveTab] = useState("learning");
   const [analytics, setAnalytics] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [resources, setResources] = useState([]);
+  const [quizAttempts, setQuizAttempts] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [showQuizModal, setShowQuizModal] = useState(false);
   const fetchInitiated = useRef(false);
   const navigate = useNavigate();
 
+  const API_BASE = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem("token");
+
+  // ====================== FETCHERS ======================
+
+  // 📈 Fetch Analytics
   const fetchAnalytics = async () => {
     try {
-      const res = await fetchWithAuth(`http://localhost:8080/analytics/student/${userId}`);
-      if (res.status === 401) {
-        logout();
-        return;
-      }
+      const res = await fetchWithAuth(`${API_BASE}/analytics/student/${userId}`);
+      if (res.status === 401) return logout();
       if (!res.ok) throw new Error(`Failed to fetch analytics: ${res.status}`);
       const data = await res.json();
+
       const chartData = Array.isArray(data.trend)
         ? data.trend.map((score, index) => ({ quiz: index + 1, score: Number(score) }))
         : [];
+
       const avgScore =
         chartData.length > 0
           ? chartData.reduce((sum, item) => sum + item.score, 0) / chartData.length
           : 0;
+
       setAnalytics({
-        studentId: data.studentId || userId,
         accuracy: typeof data.accuracy === "string" ? data.accuracy : `${data.accuracy || 0}%`,
-        totalQuizzes: Number(data.totalQuizzes || 0),
+        totalQuizzes: data.totalQuizzes || 0,
+        avgScore: Number(data.avgScore || avgScore || 0),
         badges: Array.isArray(data.badges) ? data.badges : [],
         chartData,
-        averageScore: avgScore,
       });
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    } catch {
+      toast.error("Failed to fetch analytics");
     }
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const uid = localStorage.getItem("userId");
-    if (!token || !uid) {
-      logout();
-      return;
+  // 📚 Fetch Resources
+  const fetchResources = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/resources/list`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setResources(Array.isArray(res.data) ? res.data : []);
+    } catch {
+      toast.error("Failed to load resources");
+      setResources([]);
     }
+  };
+
+  // 🗑️ Delete Resource
+  const handleDeleteResource = async (id) => {
+    if (!window.confirm("Delete this file?")) return;
+    try {
+      await axios.delete(`${API_BASE}/resources/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success("File deleted successfully");
+      fetchResources();
+    } catch {
+      toast.error("Failed to delete file");
+    }
+  };
+
+  // 🧩 Fetch Quiz Attempts
+  const fetchQuizAttempts = async () => {
+    try {
+      const res = await axios.get(`${API_BASE}/quiz/attempts/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setQuizAttempts(Array.isArray(res.data) && res.data.length > 0 ? res.data : []);
+    } catch {
+      setQuizAttempts([]);
+    }
+  };
+
+  // ====================== QUIZ HANDLERS ======================
+
+  // Show modal for quiz selection (instead of direct start)
+  const openQuizModal = (topic) => {
+    setSelectedTopic(topic);
+    setShowQuizModal(true);
+  };
+
+  const handleStartQuiz = (difficulty) => {
+    setShowQuizModal(false);
+    toast.info(`Starting ${selectedTopic} quiz (${difficulty})...`);
+    navigate(`/quiz?topic=${encodeURIComponent(selectedTopic)}&difficulty=${difficulty}`);
+  };
+
+  const renderQuizModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+        <h2 className="text-lg font-semibold text-gray-800 text-center mb-3">
+          Select difficulty for "{selectedTopic}"
+        </h2>
+        <div className="flex justify-around mb-4">
+          {["easy", "medium", "hard"].map((level) => (
+            <button
+              key={level}
+              onClick={() => handleStartQuiz(level)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
+            >
+              {level.charAt(0).toUpperCase() + level.slice(1)}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => setShowQuizModal(false)}
+          className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-md"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+
+  // ====================== INITIAL LOAD ======================
+
+  useEffect(() => {
+    if (!token || !userId) return logout();
     if (fetchInitiated.current) return;
     fetchInitiated.current = true;
     fetchAnalytics();
+    fetchResources();
+    fetchQuizAttempts();
   }, []);
 
-  const tabs = [
-    { id: "learning", label: "📚 My Learning" },
-    { id: "quizzes", label: "🧩 My Quizzes" },
-    { id: "performance", label: "📈 My Performance" },
-    { id: "leaderboard", label: "🏆 Leaderboard" },
-  ];
+  // ====================== RENDER SECTIONS ======================
 
-  const renderContent = () => {
-    if (activeTab === "learning") {
-      return (
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-          <h2 className="text-lg font-semibold mb-4 text-gray-800">📚 Upload Your Resources</h2>
-          <ResourceUpload />
+  const renderLearning = () => (
+    <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">📚 My Learning</h2>
+      <ResourceUpload onUploadSuccess={fetchResources} />
+      <h3 className="mt-6 font-medium text-gray-700 mb-2">Uploaded Resources</h3>
+
+      {resources.length === 0 ? (
+        <p className="text-gray-500 text-sm">No uploads yet.</p>
+      ) : (
+        <table className="w-full text-sm border border-gray-200 rounded-lg">
+          <thead className="bg-gray-100 text-gray-700">
+            <tr>
+              <th className="px-3 py-2 text-left">Topic</th>
+              <th className="px-3 py-2 text-left">Uploaded</th>
+              <th className="px-3 py-2 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {resources.map((r) => (
+              <tr key={r.id} className="border-t">
+                <td className="px-3 py-2 font-medium text-gray-800">
+                  {r.topic || r.fileName}
+                </td>
+                <td className="px-3 py-2 text-gray-500 text-xs">
+                  {new Date(r.uploadedAt).toLocaleDateString()}
+                </td>
+                <td className="px-3 py-2 text-center space-x-2">
+                  <button
+                    onClick={() => openQuizModal(r.topic || "General")}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm"
+                  >
+                    Generate Quiz
+                  </button>
+                  <button
+                    onClick={() => handleDeleteResource(r.id)}
+                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+
+  const renderQuizzes = () => (
+    <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">🧩 My Quizzes</h2>
+      {quizAttempts.length === 0 ? (
+        <div className="text-center">
+          <p className="text-gray-500 mb-4">No quiz attempts yet.</p>
+          <h3 className="font-medium text-gray-700 mb-2">Try these topics:</h3>
+          {["AI Basics", "Python Fundamentals", "Database Systems", "Mathematics", "General Knowledge"].map((topic) => (
+            <button
+              key={topic}
+              onClick={() => openQuizModal(topic)}
+              className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-lg shadow-md m-2 transition"
+            >
+              Start {topic} Quiz
+            </button>
+          ))}
         </div>
-      );
-    }
+      ) : (
+        <table className="w-full text-sm border border-gray-200 rounded-lg">
+          <thead className="bg-gray-100 text-gray-700">
+            <tr>
+              <th className="px-3 py-2 text-left">Topic</th>
+              <th className="px-3 py-2 text-left">Score</th>
+              <th className="px-3 py-2 text-left">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {quizAttempts.map((q) => (
+              <tr key={q.id} className="border-t">
+                <td className="px-3 py-2">{q.topic}</td>
+                <td className="px-3 py-2 text-blue-600 font-semibold">{q.score}%</td>
+                <td className="px-3 py-2 text-gray-500">
+                  {q.date ? new Date(q.date).toLocaleDateString() : "—"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
 
-    if (activeTab === "quizzes") {
-      return (
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-          <h2 className="text-lg font-semibold mb-4 text-gray-800">🧩 Available Quizzes</h2>
-          <p className="text-gray-600 text-sm mb-4">
-            Practice quizzes generated from your resources or topics of interest.
-          </p>
-          <div className="flex flex-col gap-3">
-            <div className="border p-4 rounded-lg flex justify-between items-center bg-gray-50">
-              <span>AI Basics – Medium Difficulty</span>
-              <button
-                onClick={() => navigate("/quiz")}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
-              >
-                Start Quiz
-              </button>
-            </div>
-            <div className="border p-4 rounded-lg flex justify-between items-center bg-gray-50">
-              <span>Machine Learning – Hard Difficulty</span>
-              <button
-                onClick={() => navigate("/quiz")}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm"
-              >
-                Start Quiz
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (activeTab === "leaderboard") {
-      return (
-        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 text-center">
-          <h2 className="text-lg font-semibold mb-4 text-gray-800">🏆 Leaderboard</h2>
-          <p className="text-gray-600 mb-3">See how you rank among others!</p>
-          <button
-            onClick={() => navigate("/leaderboard")}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
-          >
-            Go to Leaderboard
-          </button>
-        </div>
-      );
-    }
-
-    if (loading) {
-      return <p className="text-gray-500 text-center mt-10">📊 Loading analytics...</p>;
-    }
-    if (error) {
-      return <p className="text-red-600 text-center mt-10">❌ {error}</p>;
-    }
-    if (!analytics) {
-      return <p className="text-gray-400 text-center mt-10">No analytics yet</p>;
-    }
-
-    // PERFORMANCE TAB
-    return (
-      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-        <h2 className="text-lg font-semibold mb-4 text-gray-800">📈 Performance Overview</h2>
-        {analytics.chartData.length > 0 ? (
+  const renderPerformance = () => (
+    <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">📈 My Performance</h2>
+      {analytics && analytics.chartData?.length > 0 ? (
+        <>
           <LineChart width={800} height={300} data={analytics.chartData}>
             <Line type="monotone" dataKey="score" stroke="#2563eb" strokeWidth={3} />
             <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
             <XAxis dataKey="quiz" />
             <YAxis domain={[0, 100]} />
             <Tooltip />
+            <Legend />
           </LineChart>
-        ) : (
-          <p className="text-gray-500 text-sm">No trend data yet</p>
-        )}
-        <div className="mt-6 flex justify-around">
-          <div>
-            <p className="text-gray-500 text-sm">Accuracy</p>
-            <p className="text-xl font-bold text-blue-600">{analytics.accuracy}</p>
+          <div className="mt-6 flex justify-around">
+            <div>
+              <p className="text-gray-500 text-sm">Accuracy</p>
+              <p className="text-xl font-bold text-blue-600">{analytics.accuracy}</p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">Average Score</p>
+              <p className="text-xl font-bold text-purple-600">
+                {analytics.avgScore ? analytics.avgScore.toFixed(1) : 0}%
+              </p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">Badges</p>
+              <p className="text-xl font-bold text-green-600">
+                {analytics.badges.join(", ") || "—"}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-gray-500 text-sm">Total Quizzes</p>
-            <p className="text-xl font-bold text-green-600">{analytics.totalQuizzes}</p>
-          </div>
-          <div>
-            <p className="text-gray-500 text-sm">Average Score</p>
-            <p className="text-xl font-bold text-purple-600">
-              {analytics.averageScore.toFixed(1)}%
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  };
+        </>
+      ) : (
+        <p className="text-gray-500 text-sm">No analytics available yet.</p>
+      )}
+    </div>
+  );
+
+  // ====================== RENDER MAIN ======================
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">🎓 Student Dashboard</h1>
-          <button
-            onClick={logout}
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-5 rounded-lg text-sm"
-          >
-            Logout
-          </button>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 relative">
+      {showQuizModal && renderQuizModal()}
 
-        {/* Tabs */}
+      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">🎓 Student Dashboard</h1>
+
         <div className="flex gap-3 mb-6">
-          {tabs.map((tab) => (
+          {[
+            { id: "learning", label: "📚 My Learning" },
+            { id: "quizzes", label: "🧩 My Quizzes" },
+            { id: "performance", label: "📈 My Performance" },
+          ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
@@ -195,8 +301,9 @@ export default function StudentDashboard() {
           ))}
         </div>
 
-        {/* Tab Content */}
-        {renderContent()}
+        {activeTab === "learning" && renderLearning()}
+        {activeTab === "quizzes" && renderQuizzes()}
+        {activeTab === "performance" && renderPerformance()}
       </div>
     </div>
   );

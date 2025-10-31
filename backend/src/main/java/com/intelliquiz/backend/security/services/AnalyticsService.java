@@ -2,6 +2,7 @@ package com.intelliquiz.backend.security.services;
 
 import com.intelliquiz.backend.model.QuizAttempt;
 import com.intelliquiz.backend.model.User;
+import com.intelliquiz.backend.model.dto.TopicAnalyticsDTO;
 import com.intelliquiz.backend.repository.QuizAttemptRepository;
 import com.intelliquiz.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,49 @@ public class AnalyticsService {
         this.userRepository = userRepository;
     }
 
+    // ✅ Existing: fetch all attempts by user
     public List<QuizAttempt> getAttemptsByUser(User user) {
         return quizAttemptRepository.findByUser(user);
     }
 
+    // ✅ Enhanced: per-topic analytics
+    public List<TopicAnalyticsDTO> getTopicAnalytics(Long userId) {
+        try {
+            List<Object[]> rows = quizAttemptRepository.findTopicAveragesByUser(userId);
+            if (rows == null || rows.isEmpty()) {
+                log.info("ℹ️ No topic data found for user {}", userId);
+                return Collections.emptyList();
+            }
+
+            return rows.stream()
+                    .map(r -> new TopicAnalyticsDTO(
+                            (String) r[0],
+                            r[1] != null ? Math.round(((Number) r[1]).doubleValue() * 100.0) / 100.0 : 0.0,
+                            r[2] != null ? ((Number) r[2]).longValue() : 0L
+                    ))
+                    .sorted(Comparator.comparingDouble(TopicAnalyticsDTO::getAccuracy).reversed())
+                    .collect(Collectors.toList());
+
+        } catch (Exception e) {
+            log.error("❌ Failed to compute topic analytics for user {}: {}", userId, e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    // ✅ New: weakest N topics
+    public List<String> getWeakTopics(Long userId, int limit) {
+        List<TopicAnalyticsDTO> list = getTopicAnalytics(userId);
+        if (list.isEmpty()) return Collections.emptyList();
+
+        return list.stream()
+                .sorted(Comparator.comparingDouble(TopicAnalyticsDTO::getAccuracy))
+                .limit(limit)
+                .map(TopicAnalyticsDTO::getTopic)
+                .collect(Collectors.toList());
+    }
+
+
+    // ✅ Utility: average score per user
     public double calculateAverageScore(User user) {
         List<QuizAttempt> attempts = quizAttemptRepository.findByUser(user);
         return attempts.stream()
@@ -37,9 +77,8 @@ public class AnalyticsService {
                 .orElse(0.0);
     }
 
-
     /**
-     * Returns analytics metrics for a specific student.
+     * ✅ Enhanced: Returns full analytics metrics for a specific student.
      */
     public Map<String, Object> getStudentAnalytics(Long userId) {
         log.info("📊 Fetching analytics for user {}", userId);
@@ -47,40 +86,50 @@ public class AnalyticsService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
+        // ✅ Core stats
         Double avgScore = quizAttemptRepository.findAverageScore(userId);
         avgScore = (avgScore == null) ? 0.0 : Math.round(avgScore * 100.0) / 100.0;
 
         List<Integer> recentScores = quizAttemptRepository.findLastFiveScores(userId);
         Collections.reverse(recentScores); // chronological (oldest → newest)
 
-        double accuracy = avgScore; // no totalQuestions field yet
+        double accuracy = avgScore;
         int points = user.getPoints();
+
         List<String> badges = Arrays.stream(
                         Optional.ofNullable(user.getBadges()).orElse("")
                                 .split(","))
                 .filter(s -> !s.isBlank())
                 .collect(Collectors.toList());
 
-        Map<String, Object> response = new HashMap<>();
+        // ✅ Topic Analytics + Weak Topics
+        List<TopicAnalyticsDTO> topicAnalytics = getTopicAnalytics(userId);
+        List<String> weakTopics = getWeakTopics(userId,3);
+
+        // ✅ Build unified response
+        Map<String, Object> response = new LinkedHashMap<>();
         response.put("userId", userId);
         response.put("averageScore", avgScore);
         response.put("accuracy", accuracy);
         response.put("trend", recentScores);
         response.put("points", points);
         response.put("badges", badges);
+        response.put("topicAnalytics", topicAnalytics);
+        response.put("weakTopics", weakTopics);
 
-        log.debug("✅ Analytics response built for user {}: {}", userId, response);
+        log.info("✅ Analytics response built for user {}: {} topics, {} weak topics",
+                userId, topicAnalytics.size(), weakTopics.size());
         return response;
     }
 
     /**
-     * Generates leaderboard with top N users by points.
+     * ✅ Leaderboard - unchanged but hardened
      */
     public List<Map<String, Object>> getLeaderboard(int limit) {
         log.info("🏆 Fetching top {} users for leaderboard", limit);
         List<User> topUsers = userRepository.findTopUsers(PageRequest.of(0, limit));
 
-        List<Map<String, Object>> leaderboard = topUsers.stream().map(u -> {
+        return topUsers.stream().map(u -> {
             Map<String, Object> entry = new HashMap<>();
             entry.put("username", u.getUsername());
             entry.put("points", u.getPoints());
@@ -91,18 +140,12 @@ public class AnalyticsService {
                     .collect(Collectors.toList()));
             return entry;
         }).collect(Collectors.toList());
-
-        log.debug("🏅 Leaderboard size: {}", leaderboard.size());
-        return leaderboard;
     }
 
     // ==============================
-    // 🎮 Gamification Logic
+    // 🎮 Gamification Logic (unchanged)
     // ==============================
 
-    /**
-     * Update user points & badges after quiz submission.
-     */
     @Transactional
     public void updateGamification(User user, int score) {
         int pointsToAdd;
@@ -116,7 +159,6 @@ public class AnalyticsService {
         StringBuilder badges = new StringBuilder(
                 Optional.ofNullable(user.getBadges()).orElse(""));
 
-        // badge thresholds
         if (newTotal >= 1000 && !badges.toString().contains("Gold")) {
             badges.append(badges.length() > 0 ? "," : "").append("Gold");
         } else if (newTotal >= 500 && !badges.toString().contains("Silver")) {
@@ -130,11 +172,11 @@ public class AnalyticsService {
 
         log.info("🎮 Updated gamification for user {}: +{} points → total {} | Badges: {}",
                 user.getId(), pointsToAdd, newTotal, user.getBadges());
-
-
     }
 
-
+    /**
+     * ✅ Classroom Analytics (stub)
+     */
     public Map<String, Object> getClassroomAnalytics(Long classId) {
         log.info("📘 Classroom analytics requested for class {}", classId);
         Map<String, Object> response = new HashMap<>();
@@ -142,11 +184,8 @@ public class AnalyticsService {
         return response;
     }
 
-
-
     @Transactional
     public void recalculateAllLeaderboard() {
-        log.info("🔄 Recalculating leaderboard...");
-        // placeholder for batch logic if needed later
+        log.info("🔄 Recalculating leaderboard (future batch logic placeholder)");
     }
 }

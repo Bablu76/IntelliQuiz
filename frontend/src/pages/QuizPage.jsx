@@ -1,86 +1,83 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { mockQuizzes } from "../data/mockQuizData"; // ✅ import our local quiz data
+import { toast } from "react-toastify";
 
 const QuizPage = () => {
   const navigate = useNavigate();
-  
-  // State management
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const topic = queryParams.get("topic") || "General Knowledge";
+  const difficulty = queryParams.get("difficulty") || "medium";
+
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [score, setScore] = useState(null);
   const [recommendedDifficulty, setRecommendedDifficulty] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch quiz on component mount
+  const API_BASE = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem("token");
+
+  // 🎯 Generate quiz on load
   useEffect(() => {
     generateQuiz();
-  }, []);
+  }, [topic, difficulty]);
 
   const generateQuiz = async () => {
     setLoading(true);
-    setError(null);
-
     try {
-      console.log('🎯 Generating quiz...');
-      const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
+      console.log(`🎯 Generating quiz for ${topic} (${difficulty})`);
+      const response = await fetch(
+        `${API_BASE}/quiz/generate?topic=${encodeURIComponent(topic)}&difficulty=${difficulty}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      // ✅ Correct API call to /quiz/generate
-      const response = await fetch('http://localhost:8080/quiz/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          topic: 'General Knowledge',   // matches backend
-          difficulty: 'medium'
-        })
-      });
-
-      console.log('📡 Response Status:', response.status);
-
-      if (!response.ok) {
-        throw new Error(`Failed to generate quiz (${response.status})`);
-      }
-
+      if (!response.ok) throw new Error(`Backend quiz failed (${response.status})`);
       const data = await response.json();
-      console.log('✅ Quiz generated:', data);
 
-      setQuestions(data.questions || []);
-      setSelectedAnswers(new Array(data.questions?.length || 0).fill(null));
+      const validQuestions = Array.isArray(data.questions)
+        ? data.questions.slice(0, 5)
+        : [];
+
+      if (validQuestions.length === 0) throw new Error("No questions received");
+
+      setQuestions(validQuestions);
+      setSelectedAnswers(new Array(validQuestions.length).fill(null));
       setLoading(false);
     } catch (err) {
-      console.error('❌ Error generating quiz:', err);
-      setError(err.message);
+      console.warn("⚠️ Using mock quiz fallback:", err.message);
+      const fallback = mockQuizzes[topic] || mockQuizzes["General Knowledge"];
+      const mockSet = fallback.questions.slice(0, 5);
+      setQuestions(mockSet);
+      setSelectedAnswers(new Array(mockSet.length).fill(null));
       setLoading(false);
+      toast.info("Loaded mock quiz questions.");
     }
   };
 
-
+  // 🧠 Handle answer selection
   const handleOptionSelect = (optionIndex) => {
     setSelectedOption(optionIndex);
   };
 
+  // ⏭️ Next Question or Submit
   const handleNext = () => {
     if (selectedOption === null) {
-      alert('Please select an answer before proceeding');
+      toast.warn("Please select an answer before proceeding.");
       return;
     }
 
-    // Save the selected answer
     const newAnswers = [...selectedAnswers];
     newAnswers[currentQuestionIndex] = selectedOption;
     setSelectedAnswers(newAnswers);
 
-    // Move to next question or finish
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption(newAnswers[currentQuestionIndex + 1]);
@@ -89,6 +86,7 @@ const QuizPage = () => {
     }
   };
 
+  // ⏮️ Previous Question
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -96,48 +94,49 @@ const QuizPage = () => {
     }
   };
 
+  // 📤 Submit Quiz
   const submitQuiz = async (answers) => {
     try {
-      console.log('📤 Submitting quiz answers...');
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('userId') || 1;
-
-      // 🔧 Build backend-compatible objects
       const formattedAnswers = questions.map((q, index) => {
         const selected = answers[index];
-        if (selected === null) return { questionId: q.questionId, isCorrect: false };
-        const selectedOption = q.options[selected];
-        const correct = selectedOption === q.answer;
-        return { questionId: q.questionId, isCorrect: correct };
+        const selectedOptionText = q.options[selected];
+        const correct = selectedOptionText === q.answer;
+        return { questionId: q.questionId || index + 1, isCorrect: correct };
       });
 
-      const response = await fetch('http://localhost:8080/quiz/submit', {
-        method: 'POST',
+      const response = await fetch(`${API_BASE}/quiz/submit`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: parseInt(userId),
-          answers: formattedAnswers
-        })
+          topic,
+          difficulty,
+          userId: parseInt(localStorage.getItem("userId")),
+          answers: formattedAnswers,
+        }),
       });
 
-      console.log('📡 Submit Response Status:', response.status);
-      if (!response.ok) throw new Error(`Failed to submit quiz (${response.status})`);
-
+      if (!response.ok) throw new Error(`Quiz submission failed (${response.status})`);
       const result = await response.json();
-      console.log('✅ Quiz submitted successfully:', result);
 
-      setScore(result.score);
-      setRecommendedDifficulty(result.nextLevel || 'medium');
+      setScore(result.scorePercentage || 0);
+      setRecommendedDifficulty(result.nextLevel || "medium");
       setQuizCompleted(true);
     } catch (err) {
-      console.error('❌ Error submitting quiz:', err);
-      setError(err.message);
+      console.error("❌ Quiz submission error:", err);
+      toast.error("Quiz submission failed. Showing mock result.");
+      const correctCount = selectedAnswers.reduce(
+        (acc, sel, i) => (questions[i].options[sel] === questions[i].answer ? acc + 1 : acc),
+        0
+      );
+      const scorePercent = Math.round((correctCount / questions.length) * 100);
+      setScore(scorePercent);
+      setRecommendedDifficulty(scorePercent > 80 ? "hard" : scorePercent < 50 ? "easy" : "medium");
+      setQuizCompleted(true);
     }
   };
-
 
   const handleRetakeQuiz = () => {
     setQuizCompleted(false);
@@ -150,42 +149,40 @@ const QuizPage = () => {
   };
 
   const handleBackToDashboard = () => {
-    navigate('/dashboard');
+    navigate("/student/dashboard");
   };
 
-  // Loading state
+  // 🌀 Loading
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-md">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600 text-center">Generating your quiz...</p>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <p className="mt-4 text-gray-600">Generating quiz for {topic}...</p>
       </div>
     );
   }
 
-  // Error state
-  if (error) {
+  // ✅ Quiz Completed
+  if (quizCompleted) {
     return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-          <div className="text-red-600 text-center mb-4">
-            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h2 className="text-xl font-bold mb-2">Error</h2>
-            <p className="text-gray-600">{error}</p>
-          </div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        <div className="bg-white rounded-lg shadow-md p-8 w-full max-w-md text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">🎉 Quiz Completed!</h2>
+          <p className="text-gray-600 mb-2">Topic: {topic}</p>
+          <p className="text-5xl font-bold text-blue-600 mb-2">{score}%</p>
+          <p className="text-gray-500 mb-4">
+            Recommended Next Level:{" "}
+            <span className="text-purple-600 font-semibold">{recommendedDifficulty}</span>
+          </p>
           <button
-            onClick={generateQuiz}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors mb-2"
+            onClick={handleRetakeQuiz}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg mb-2 hover:bg-blue-700 transition"
           >
-            Try Again
+            Retake Quiz
           </button>
           <button
             onClick={handleBackToDashboard}
-            className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors"
+            className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition"
           >
             Back to Dashboard
           </button>
@@ -194,141 +191,70 @@ const QuizPage = () => {
     );
   }
 
-  // Completion screen
-  if (quizCompleted) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        
-        <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-          <div className="text-center">
-            <div className="text-green-600 mb-4">
-              <svg className="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">Quiz Completed! 🎉</h2>
-            
-            <div className="bg-blue-50 rounded-lg p-6 mb-6">
-              <p className="text-gray-600 mb-2">Your Score</p>
-              <p className="text-5xl font-bold text-blue-600 mb-4">{score}%</p>
-              <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-                <div 
-                  className="bg-blue-600 h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${score}%` }}
-                ></div>
-              </div>
-              <p className="text-sm text-gray-600">
-                {score >= 80 ? '🌟 Excellent work!' : score >= 60 ? '👍 Good job!' : '💪 Keep practicing!'}
-              </p>
-            </div>
-
-            <div className="bg-purple-50 rounded-lg p-4 mb-6">
-              <p className="text-sm text-gray-600 mb-1">Recommended Difficulty</p>
-              <p className="text-xl font-semibold text-purple-600 capitalize">{recommendedDifficulty}</p>
-            </div>
-
-            <button
-              onClick={handleRetakeQuiz}
-              className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors mb-3 font-medium"
-            >
-              Take Another Quiz
-            </button>
-            <button
-              onClick={handleBackToDashboard}
-              className="w-full bg-gray-200 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-300 transition-colors font-medium"
-            >
-              Back to Dashboard
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Quiz interface
+  // 🎯 Quiz in Progress
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4">
-      <div className="max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-2xl font-bold text-gray-800">IntelliQuiz 🎯</h1>
-            <span className="text-sm text-gray-600 bg-blue-100 px-3 py-1 rounded-full">
-              Question {currentQuestionIndex + 1} of {questions.length}
-            </span>
-          </div>
-          
-          {/* Progress Bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
-            ></div>
-          </div>
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold text-gray-800">🧠 {topic} Quiz</h1>
+          <span className="text-sm text-gray-600 bg-blue-100 px-3 py-1 rounded-full">
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </span>
         </div>
 
-        {/* Question Card */}
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">
-            {currentQuestion?.question}
-          </h2>
+        <div className="w-full bg-gray-200 rounded-full h-2 mb-4">
+          <div
+            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
 
-          {/* Options */}
-          <div className="space-y-3 mb-8">
-            {currentQuestion?.options?.map((option, index) => (
-              <label
-                key={index}
-                className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                  selectedOption === index
-                    ? 'border-blue-600 bg-blue-50'
-                    : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="answer"
-                  value={index}
-                  checked={selectedOption === index}
-                  onChange={() => handleOptionSelect(index)}
-                  className="w-5 h-5 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="ml-3 text-gray-700">{option}</span>
-              </label>
-            ))}
-          </div>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">{currentQuestion?.question}</h2>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between gap-4">
-            <button
-              onClick={handlePrevious}
-              disabled={currentQuestionIndex === 0}
-              className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                currentQuestionIndex === 0
-                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        <div className="space-y-3 mb-6">
+          {currentQuestion?.options?.map((option, index) => (
+            <label
+              key={index}
+              className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all ${
+                selectedOption === index
+                  ? "border-blue-600 bg-blue-50"
+                  : "border-gray-200 hover:border-blue-300"
               }`}
             >
-              ← Previous
-            </button>
-            
-            <button
-              onClick={handleNext}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              {currentQuestionIndex === questions.length - 1 ? 'Submit Quiz' : 'Next →'}
-            </button>
-          </div>
+              <input
+                type="radio"
+                name="answer"
+                value={index}
+                checked={selectedOption === index}
+                onChange={() => handleOptionSelect(index)}
+                className="w-4 h-4 text-blue-600"
+              />
+              <span className="ml-3 text-gray-700">{option}</span>
+            </label>
+          ))}
         </div>
 
-        {/* Debug Info (remove in production) */}
-        <div className="mt-6 bg-gray-800 rounded-lg p-4 text-white text-sm">
-          <p className="font-semibold mb-2">🔍 Debug Info:</p>
-          <p>Current Question: {currentQuestionIndex + 1}/{questions.length}</p>
-          <p>Selected Answer: {selectedOption !== null ? selectedOption : 'None'}</p>
-          <p>Answers: [{selectedAnswers.map(a => a !== null ? a : '_').join(', ')}]</p>
+        <div className="flex justify-between">
+          <button
+            onClick={handlePrevious}
+            disabled={currentQuestionIndex === 0}
+            className={`px-5 py-2 rounded-lg ${
+              currentQuestionIndex === 0
+                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                : "bg-gray-200 hover:bg-gray-300 text-gray-700"
+            }`}
+          >
+            ← Previous
+          </button>
+          <button
+            onClick={handleNext}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+          >
+            {currentQuestionIndex === questions.length - 1 ? "Submit" : "Next →"}
+          </button>
         </div>
       </div>
     </div>
