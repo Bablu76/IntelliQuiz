@@ -6,48 +6,53 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Setter
+/**
+ * 🎯 QuizAttempt Entity
+ * Represents a single quiz attempt by a user, including adaptive difficulty.
+ */
 @Getter
+@Setter
 @Entity
 @Table(name = "quiz_attempts")
 public class QuizAttempt {
 
     // ==============================
-    // 🧩 Getters and Setters
+    // 🔑 Primary Key
     // ==============================
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ==============================
+    // 🧩 Quiz Metadata
+    // ==============================
     @Column(nullable = false)
     private int score;
 
-    @Column(nullable = true, length = 255)
+    @Column(length = 255)
     private String topic;
 
-
-    // Relationship to User
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    // ==============================
-    // 🧩 New Fields for Adaptive System
-    // ==============================
+    @Column(nullable = false)
+    private String difficultyLevel = "easy"; // ✅ consistent field name
 
     @Column(nullable = false)
-    private String difficultyLevel = "easy"; // default for first-time quiz
-
-    @Column(nullable = false)
-    private int timeTaken = 0; // seconds to complete quiz
+    private int timeTaken = 0; // in seconds
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     // ==============================
+    // 👤 Relationship to User
+    // ==============================
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    // ==============================
     // ⚙️ Constructors
     // ==============================
     public QuizAttempt() {}
+
     public QuizAttempt(User user, String topic, String difficultyLevel, int score, int timeTaken) {
         this.user = user;
         this.topic = topic;
@@ -64,11 +69,10 @@ public class QuizAttempt {
     }
 
     // ==============================
-    // 🧩 Lifecycle Callbacks
+    // 🧩 Lifecycle Hook
     // ==============================
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
-
 }

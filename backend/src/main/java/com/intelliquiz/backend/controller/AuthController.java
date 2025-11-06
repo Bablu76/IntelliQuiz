@@ -6,8 +6,8 @@ import com.intelliquiz.backend.payload.request.*;
 import com.intelliquiz.backend.payload.response.*;
 import com.intelliquiz.backend.repository.*;
 import com.intelliquiz.backend.security.jwt.JwtUtils;
-import com.intelliquiz.backend.security.services.RefreshTokenService;
-import com.intelliquiz.backend.security.services.UserDetailsImpl;
+import com.intelliquiz.backend.service.RefreshTokenService;
+import com.intelliquiz.backend.service.UserDetailsImpl;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

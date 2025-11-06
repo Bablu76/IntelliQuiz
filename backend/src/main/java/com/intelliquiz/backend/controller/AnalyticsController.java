@@ -1,7 +1,7 @@
 package com.intelliquiz.backend.controller;
 
 import com.intelliquiz.backend.repository.UserRepository;
-import com.intelliquiz.backend.security.services.AnalyticsService;
+import com.intelliquiz.backend.service.AnalyticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

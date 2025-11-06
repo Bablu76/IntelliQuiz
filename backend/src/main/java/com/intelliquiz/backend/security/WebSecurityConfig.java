@@ -2,7 +2,7 @@ package com.intelliquiz.backend.security;
 
 import com.intelliquiz.backend.security.jwt.AuthTokenFilter;
 import com.intelliquiz.backend.security.jwt.JwtUtils;
-import com.intelliquiz.backend.security.services.UserDetailsServiceImpl;
+import com.intelliquiz.backend.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,6 +71,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/student/**").hasRole("STUDENT")
 
+                        .requestMatchers("/quiz/test/**").permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 );

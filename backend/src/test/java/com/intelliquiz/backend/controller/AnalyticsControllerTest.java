@@ -1,6 +1,6 @@
 package com.intelliquiz.backend.controller;
 
-import com.intelliquiz.backend.security.services.AnalyticsService;
+import com.intelliquiz.backend.service.AnalyticsService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

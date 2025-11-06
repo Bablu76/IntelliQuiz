@@ -1,6 +1,6 @@
 package com.intelliquiz.backend.security.jwt;
 
-import com.intelliquiz.backend.security.services.UserDetailsImpl;
+import com.intelliquiz.backend.service.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

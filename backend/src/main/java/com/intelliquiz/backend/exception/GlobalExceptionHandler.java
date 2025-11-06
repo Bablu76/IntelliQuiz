@@ -3,105 +3,83 @@ package com.intelliquiz.backend.exception;
 import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+/**
+ * Centralized exception handler returning consistent JSON responses.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // ✅ 1️⃣ Validation Errors
+    private Map<String, Object> buildBody(String errorType, String message, Object details) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("errorType", errorType);
+        body.put("message", message);
+        if (details != null) body.put("details", details);
+        body.put("timestamp", Instant.now().toString());
+        return body;
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors()
-                .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
-        log.debug("Validation errors: {}", errors);
-        return ResponseEntity.badRequest().body(Map.of(
-                "errorType", "ValidationError",
-                "details", errors
-        ));
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleValidation(MethodArgumentNotValidException ex) {
+        String errors = ex.getBindingResult().getFieldErrors()
+                .stream().map(FieldError::getDefaultMessage).collect(Collectors.joining("; "));
+        log.warn("Validation failed: {}", errors);
+        return buildBody("ValidationError", "Validation failed for request", errors);
     }
 
-    // ✅ 2️⃣ Token Refresh Exception
-    @ExceptionHandler(TokenRefreshException.class)
-    public ResponseEntity<?> handleTokenRefreshException(TokenRefreshException ex) {
-        log.warn("Token refresh error: {}", ex.getMessage());
-        return ResponseEntity.badRequest().body(Map.of(
-                "errorType", "TokenRefreshError",
-                "message", ex.getMessage()
-        ));
-    }
-
-    // ✅ 3️⃣ Bad Request
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> handleBadRequest(BadRequestException ex) {
-        log.warn("Bad request: {}", ex.getMessage());
-        return ResponseEntity.badRequest().body(Map.of(
-                "errorType", "BadRequest",
-                "message", ex.getMessage()
-        ));
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleBadRequest(BadRequestException ex) {
+        log.warn("BadRequest: {}", ex.getMessage());
+        return buildBody("BadRequest", ex.getMessage(), null);
     }
 
-    // ✅ 4️⃣ Access Denied
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> handleAccessDenied(AccessDeniedException ex) {
-        log.warn("Access denied: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
-                "errorType", "AccessDenied",
-                "message", ex.getMessage()
-        ));
-    }
-
-    // ✅ 5️⃣ Entity Not Found
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleNotFound(EntityNotFoundException ex) {
-        log.warn("Entity not found: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
-                "errorType", "NotFound",
-                "message", ex.getMessage()
-        ));
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, Object> handleNotFound(EntityNotFoundException ex) {
+        log.warn("EntityNotFound: {}", ex.getMessage());
+        return buildBody("NotFound", ex.getMessage(), null);
     }
 
-    // ✅ 6️⃣ Generic RuntimeException (merged)
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> handleRuntime(RuntimeException ex) {
-        log.error("Runtime exception: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "errorType", "RuntimeError",
-                "message", ex.getMessage() != null ? ex.getMessage() : "An unexpected error occurred"
-        ));
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Map<String, Object> handleAccessDenied(AccessDeniedException ex) {
+        log.warn("AccessDenied: {}", ex.getMessage());
+        return buildBody("AccessDenied", "You do not have permission to perform this action", ex.getMessage());
     }
 
-    // ✅ 7️⃣ Catch-all Exception fallback
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleInvalidJson(HttpMessageNotReadableException ex) {
+        log.warn("Malformed JSON request: {}", ex.getMessage());
+        return buildBody("MalformedJson", "Request JSON is invalid or unreadable", ex.getMessage());
+    }
+
+    @ExceptionHandler(TokenRefreshException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Map<String, Object> handleTokenRefresh(TokenRefreshException ex) {
+        log.warn("Token refresh failed: {}", ex.getMessage());
+        return buildBody("TokenRefreshError", ex.getMessage(), null);
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleAll(Exception ex) {
-        log.error("Unhandled exception caught globally: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                "errorType", "ServerError",
-                "message", "Internal Server Error"
-        ));
+    public ResponseEntity<Map<String, Object>> handleAll(Exception ex) {
+        log.error("Unhandled exception: {}", ex.getMessage(), ex);
+        Map<String, Object> body = buildBody("InternalError", "An internal error occurred", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
-
-    // ✅ 8️⃣ Handle file upload too large
-    @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
-    public ResponseEntity<?> handleFileTooLarge(org.springframework.web.multipart.MaxUploadSizeExceededException ex) {
-        log.warn("File upload too large: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(Map.of(
-                "errorType", "FileTooLarge",
-                "message", "Uploaded file exceeds allowed size limit"
-        ));
-    }
-
-
-
-
 }

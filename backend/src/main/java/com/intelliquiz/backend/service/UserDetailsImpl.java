@@ -1,4 +1,4 @@
-package com.intelliquiz.backend.security.services;
+package com.intelliquiz.backend.service;
 
 import com.intelliquiz.backend.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

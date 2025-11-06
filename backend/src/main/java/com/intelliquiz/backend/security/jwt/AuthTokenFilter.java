@@ -1,6 +1,6 @@
 package com.intelliquiz.backend.security.jwt;
 
-import com.intelliquiz.backend.security.services.UserDetailsServiceImpl;
+import com.intelliquiz.backend.service.UserDetailsServiceImpl;
 import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

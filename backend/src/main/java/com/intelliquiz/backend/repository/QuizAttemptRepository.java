@@ -35,5 +35,5 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
     List<Object[]> findTopicAveragesByUser(@Param("userId") Long userId);
 
 
-
+    List<QuizAttempt> findByUserIdAndTopic(Long userId, String topic);
 }

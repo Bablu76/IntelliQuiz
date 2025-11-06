@@ -1,4 +1,4 @@
-package com.intelliquiz.backend.security.services;
+package com.intelliquiz.backend.service;
 
 import com.intelliquiz.backend.model.QuizAttempt;
 import com.intelliquiz.backend.model.User;

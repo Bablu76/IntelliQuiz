@@ -1,8 +1,9 @@
-package com.intelliquiz.backend.security.services;
+package com.intelliquiz.backend.security.service;
 
 import com.intelliquiz.backend.model.dto.TopicAnalyticsDTO;
 import com.intelliquiz.backend.repository.QuizAttemptRepository;
 import com.intelliquiz.backend.repository.UserRepository;
+import com.intelliquiz.backend.service.AnalyticsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

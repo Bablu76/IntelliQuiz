@@ -5,7 +5,7 @@ import com.intelliquiz.backend.model.Resource;
 import com.intelliquiz.backend.model.Role;
 import com.intelliquiz.backend.model.User;
 import com.intelliquiz.backend.repository.UserRepository;
-import com.intelliquiz.backend.security.services.ResourceService;
+import com.intelliquiz.backend.service.ResourceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
