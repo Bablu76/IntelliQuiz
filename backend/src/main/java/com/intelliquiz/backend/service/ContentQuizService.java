@@ -15,12 +15,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * ContentQuizService
- * - Extracts text from uploaded PDF resources (local file system)
- * - Generates simple deterministic MCQs from extracted sentences
- *
- * Note: this is an "NLP-ready" deterministic generator suitable for demo.
- * Later you can replace generateQuestionFromText() to call an LLM.
+ * 🎯 ContentQuizService
+ * - Extracts text from stored PDF resources (in uploads folder)
+ * - Generates deterministic MCQs from sentences
+ * - Falls back to static bank if resource or text missing
  */
 @Service
 public class ContentQuizService {
@@ -29,7 +27,6 @@ public class ContentQuizService {
 
     private final ResourceRepository resourceRepository;
 
-    // folder where files are stored; should match application.properties file.upload-dir
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
 
@@ -38,170 +35,192 @@ public class ContentQuizService {
     }
 
     /**
-     * Generate questions from a resource matching topic (case-insensitive).
-     * Returns an empty list if no resource found or parsing fails.
+     * Generate questions from uploaded PDF for given topic & difficulty.
+     * If no resource found or parsing fails → static fallback bank.
      */
     public List<Map<String, Object>> generateQuestionsFromTopic(String topic, String difficulty) {
-        List<Map<String, Object>> questions = new ArrayList<>();
+        topic = topic == null ? "General" : topic.trim();
+        difficulty = difficulty == null ? "medium" : difficulty.trim().toLowerCase();
+
+        log.info("🎯 Generating static questions | topic='{}' difficulty='{}'", topic, difficulty);
 
         try {
             Optional<Resource> resOpt = resourceRepository.findByTopicIgnoreCase(topic);
             if (resOpt.isEmpty()) {
-                log.info("No resource found for topic: {}", topic);
-                return Collections.emptyList();
+                log.warn("⚠️ No PDF resource found for topic '{}'. Using fallback questions.", topic);
+                return fallbackQuestions(topic, difficulty);
             }
 
             Resource resource = resOpt.get();
-            String storedFileName = resource.getFileName(); // stored filename in uploads
-            File pdfFile = new File(uploadDir, storedFileName);
-
+            File pdfFile = new File(uploadDir, resource.getFileName());
             if (!pdfFile.exists()) {
-                log.warn("Resource file not found on disk: {}", pdfFile.getAbsolutePath());
-                return Collections.emptyList();
+                log.warn("⚠️ PDF file missing at path: {}", pdfFile.getAbsolutePath());
+                return fallbackQuestions(topic, difficulty);
             }
 
-            String fullText = extractTextFromPdf(pdfFile);
-            if (fullText == null || fullText.isBlank()) {
-                log.warn("Parsed PDF contains no text: {}", pdfFile.getName());
-                return Collections.emptyList();
+            // Extract and clean text
+            String text = extractTextFromPdf(pdfFile);
+            if (text == null || text.isBlank()) {
+                log.warn("⚠️ PDF '{}' has no readable text. Using fallback.", resource.getFileName());
+                return fallbackQuestions(topic, difficulty);
             }
 
-            // Basic sentence split — simple heuristic
-            List<String> sentences = splitIntoSentences(fullText);
-
-            // We want at least 3 sentences to form a question + distractors
-            if (sentences.size() < 3) {
-                log.warn("Not enough sentences ({}) to form questions for topic {}", sentences.size(), topic);
-                return Collections.emptyList();
+            // Split into sentences and generate questions
+            List<String> sentences = splitIntoSentences(text);
+            if (sentences.size() < 4) {
+                log.warn("⚠️ Too few sentences ({}). Using fallback for '{}'.", sentences.size(), topic);
+                return fallbackQuestions(topic, difficulty);
             }
 
-            // Pick up to 5 questions from different parts of the document
-            int maxQuestions = Math.min(5, Math.max(1, sentences.size() / 5)); // e.g., 5% of sentences or up to 5
-            // but ensure at least 3 questions for better demo:
-            maxQuestions = Math.min(5, Math.max(1, Math.min(5, sentences.size()/Math.max(1, sentences.size()/3))));
-
-            // Simpler approach: sample sentences at intervals to cover the doc
-            int interval = Math.max(1, sentences.size() / Math.max(1, maxQuestions));
-            int qid = 1;
-            for (int i = 0; i < sentences.size() && qid <= maxQuestions; i += interval, qid++) {
-                String correctSentence = sentences.get(i).trim();
-                // Create a short question from the sentence:
-                String questionText = createQuestionFromSentence(correctSentence, topic);
-
-                // Build options: correct answer (a key phrase) and 3 distractors sampled from other sentences
-                String correctAnswer = excerptKeywordFromSentence(correctSentence);
-                List<String> distractors = pickDistractors(sentences, i, 3);
-
-                // Ensure unique options and shuffle
-                Set<String> optionsSet = new LinkedHashSet<>();
-                optionsSet.add(correctAnswer);
-                optionsSet.addAll(distractors);
-
-                // If not enough unique distractors, fill with generic placeholders
-                while (optionsSet.size() < 4) {
-                    optionsSet.add("Option " + (optionsSet.size() + 1));
-                }
-
-                List<String> options = new ArrayList<>(optionsSet).subList(0, 4);
-                Collections.shuffle(options);
-
-                Map<String, Object> q = new HashMap<>();
-                q.put("questionId", qid);
-                q.put("question", questionText);
-                q.put("options", options);
-                q.put("answer", correctAnswer);
-
-                questions.add(q);
-            }
-
-            log.info("Generated {} questions for topic '{}' using resource '{}'", questions.size(), topic, resource.getFileName());
+            List<Map<String, Object>> questions = generateFromSentences(sentences, topic, difficulty);
+            log.info("✅ Generated {} questions from PDF '{}'", questions.size(), resource.getFileName());
             return questions;
 
         } catch (Exception e) {
-            log.error("Error generating questions for topic {}: {}", topic, e.getMessage(), e);
-            return Collections.emptyList();
+            log.error("❌ Error generating questions from topic '{}': {}", topic, e.getMessage(), e);
+            return fallbackQuestions(topic, difficulty);
         }
     }
 
+    // ------------------------------------------------------------------------
+    // 🔹 Internal logic
+    // ------------------------------------------------------------------------
+
     private String extractTextFromPdf(File file) {
-        try (PDDocument document = PDDocument.load(file)) {
+        try (PDDocument doc = PDDocument.load(file)) {
             PDFTextStripper stripper = new PDFTextStripper();
-            return stripper.getText(document);
+            stripper.setSortByPosition(true);
+            String text = stripper.getText(doc).trim();
+            if (text.length() > 50000) { // cap for performance
+                text = text.substring(0, 50000);
+                log.warn("⚠️ Truncated extracted text to 50k characters for '{}'", file.getName());
+            }
+            return text;
         } catch (IOException e) {
-            log.error("PDF parsing failed for file {}: {}", file.getAbsolutePath(), e.getMessage(), e);
+            log.error("❌ Failed to parse PDF '{}': {}", file.getName(), e.getMessage());
             return null;
         }
     }
 
     private List<String> splitIntoSentences(String text) {
-        // Very simple sentence split based on dot, question mark, exclamation
-        // For production, use OpenNLP or a proper sentence splitter
-        String[] raw = text.split("(?<=[\\.\\?\\!])\\s+");
+        String[] raw = text.split("(?<=[.!?])\\s+");
         return Arrays.stream(raw)
                 .map(String::trim)
-                .filter(s -> s.length() > 20) // ignore very short sentences
+                .filter(s -> s.length() > 30 && Character.isUpperCase(s.charAt(0)))
                 .collect(Collectors.toList());
     }
 
+    private List<Map<String, Object>> generateFromSentences(List<String> sentences, String topic, String difficulty) {
+        int questionCount = Math.min(5, Math.max(3, sentences.size() / 10));
+        int interval = Math.max(1, sentences.size() / questionCount);
+
+        List<Map<String, Object>> questions = new ArrayList<>();
+        for (int i = 0, id = 1; i < sentences.size() && id <= questionCount; i += interval, id++) {
+            String sentence = sentences.get(i);
+            String question = createQuestionFromSentence(sentence, topic);
+            String answer = excerptAnswer(sentence);
+            List<String> distractors = pickDistractors(sentences, i, 3);
+
+            Set<String> optionsSet = new LinkedHashSet<>();
+            optionsSet.add(answer);
+            optionsSet.addAll(distractors);
+            while (optionsSet.size() < 4) optionsSet.add("Option " + (optionsSet.size() + 1));
+
+            List<String> options = new ArrayList<>(optionsSet);
+            Collections.shuffle(options);
+
+            Map<String, Object> q = new LinkedHashMap<>();
+            q.put("questionId", id);
+            q.put("question", question);
+            q.put("options", options);
+            q.put("answer", answer);
+            q.put("difficulty", difficulty);
+            questions.add(q);
+        }
+
+        return questions;
+    }
+
     private String createQuestionFromSentence(String sentence, String topic) {
-        // Very naive — transform sentence into a question form
-        // Example: "Supervised learning is the process of..." -> "What is supervised learning?"
-        // Strategy: If sentence contains " is " or " are ", split and rephrase.
         String lower = sentence.toLowerCase();
         if (lower.contains(" is ")) {
-            String[] parts = sentence.split("\\s+is\\s+", 2);
-            if (parts.length >= 1) {
-                String subject = parts[0].replaceAll("\\b(that|which|who)\\b", "").trim();
-                return "What is " + tidySubject(subject) + "?";
-            }
+            String subject = sentence.split("\\s+is\\s+")[0].replaceAll("[^A-Za-z0-9\\s]", "").trim();
+            return "What is " + (subject.isBlank() ? topic : subject) + "?";
         }
         if (lower.contains(" are ")) {
-            String[] parts = sentence.split("\\s+are\\s+", 2);
-            String subject = parts[0].trim();
-            return "What are " + tidySubject(subject) + "?";
+            String subject = sentence.split("\\s+are\\s+")[0].replaceAll("[^A-Za-z0-9\\s]", "").trim();
+            return "What are " + (subject.isBlank() ? topic : subject) + "?";
         }
-        // fallback: ask "Which statement is true about <topic>?"
-        return "Which statement is true about " + (topic == null ? "this topic" : topic) + "?";
+        return "Which of the following is true about " + topic + "?";
     }
 
-    private String tidySubject(String s) {
-        // remove trailing commas/phrases
-        String out = s.replaceAll("[^A-Za-z0-9\\s]", "").trim();
-        if (out.length() > 40) out = out.substring(0, 40) + "...";
-        return out;
+    private String excerptAnswer(String sentence) {
+        String clean = sentence.replaceAll("\\s+", " ").trim();
+        if (clean.contains(",")) clean = clean.split(",")[0];
+        String[] parts = clean.split("\\s+");
+        int len = Math.min(parts.length, 8);
+        String answer = String.join(" ", Arrays.copyOfRange(parts, 0, len));
+        return answer.length() > 80 ? answer.substring(0, 80) + "..." : answer;
     }
 
-    private String excerptKeywordFromSentence(String sentence) {
-        // pick a short phrase or first noun chunk as 'answer'
-        // naive: pick first 4-8 words (or part before comma)
-        String cleaned = sentence.replaceAll("\\s+", " ").trim();
-        if (cleaned.contains(",")) cleaned = cleaned.split(",")[0];
-        String[] parts = cleaned.split("\\s+");
-        int len = Math.min(parts.length, 6);
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            sb.append(parts[i]);
-            if (i < len - 1) sb.append(" ");
-        }
-        String ans = sb.toString();
-        if (ans.length() > 80) ans = ans.substring(0, 80) + "...";
-        return ans;
-    }
-
-    private List<String> pickDistractors(List<String> sentences, int excludeIndex, int needed) {
+    private List<String> pickDistractors(List<String> sentences, int excludeIndex, int count) {
         List<String> pool = new ArrayList<>();
         for (int i = 0; i < sentences.size(); i++) {
             if (i == excludeIndex) continue;
-            String candidate = excerptKeywordFromSentence(sentences.get(i));
-            if (candidate != null && candidate.length() > 4) pool.add(candidate);
+            String phrase = excerptAnswer(sentences.get(i));
+            if (phrase.length() > 20) pool.add(phrase);
         }
         Collections.shuffle(pool);
-        // choose top 'needed' unique items
-        LinkedHashSet<String> chosen = new LinkedHashSet<>();
-        for (String s : pool) {
-            if (chosen.size() >= needed) break;
-            chosen.add(s);
+        return pool.stream().limit(count).collect(Collectors.toList());
+    }
+
+    // ------------------------------------------------------------------------
+    // 🧩 Static fallback (used if PDF missing or unreadable)
+    // ------------------------------------------------------------------------
+
+    private List<Map<String, Object>> fallbackQuestions(String topic, String difficulty) {
+        log.info("🛡️ Using fallback static questions for topic='{}'", topic);
+        List<Map<String, Object>> list = new ArrayList<>();
+
+        Map<String, List<Map<String, Object>>> bank = new HashMap<>();
+
+        bank.put("general-medium", List.of(
+                question("Who wrote India's national anthem?",
+                        List.of("Rabindranath Tagore", "Mahatma Gandhi", "Nehru", "Bose"), "Rabindranath Tagore"),
+                question("Which planet is known as the Red Planet?",
+                        List.of("Earth", "Mars", "Jupiter", "Venus"), "Mars")
+        ));
+
+        bank.put("ai-medium", List.of(
+                question("What is Machine Learning?",
+                        List.of("Hardware optimization", "Learning patterns from data", "Manual coding", "Random guessing"),
+                        "Learning patterns from data"),
+                question("Which algorithm is commonly used for classification?",
+                        List.of("Decision Tree", "Bubble Sort", "Quick Sort", "Merge Sort"),
+                        "Decision Tree")
+        ));
+
+        String key = (topic.toLowerCase() + "-" + difficulty.toLowerCase()).trim();
+        list.addAll(bank.getOrDefault(key, genericSamples(topic, difficulty)));
+
+        for (int i = 0; i < list.size(); i++) list.get(i).put("questionId", i + 1);
+        return list;
+    }
+
+    private Map<String, Object> question(String q, List<String> options, String answer) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("question", q);
+        map.put("options", options);
+        map.put("answer", answer);
+        return map;
+    }
+
+    private List<Map<String, Object>> genericSamples(String topic, String difficulty) {
+        List<Map<String, Object>> fallback = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            fallback.add(question("Sample question " + i + " about " + topic + "?",
+                    List.of("Option A", "Option B", "Option C", "Option D"), "Option A"));
         }
-        return new ArrayList<>(chosen);
+        return fallback;
     }
 }

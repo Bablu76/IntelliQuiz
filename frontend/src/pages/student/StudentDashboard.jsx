@@ -1,10 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from "recharts";
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+} from "recharts";
 import useAuth from "../../hooks/useAuth";
 import ResourceUpload from "../../components/ResourceUpload";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { generateAIQuiz } from "../../utils/quizApi";
+import { getSavedDifficulty, saveDifficulty } from "../../utils/adaptive";
 
 export default function StudentDashboard() {
   const { fetchWithAuth, userId, logout } = useAuth();
@@ -12,17 +22,19 @@ export default function StudentDashboard() {
   const [analytics, setAnalytics] = useState(null);
   const [resources, setResources] = useState([]);
   const [quizAttempts, setQuizAttempts] = useState([]);
-  const [selectedTopic, setSelectedTopic] = useState(null);
-  const [showQuizModal, setShowQuizModal] = useState(false);
+  const [quizPrompt, setQuizPrompt] = useState({
+    visible: false,
+    topic: "",
+    difficulty: "medium",
+    questionCount: 10,
+  });
+
   const fetchInitiated = useRef(false);
   const navigate = useNavigate();
-
   const API_BASE = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
 
-  // ====================== FETCHERS ======================
-
-  // 📈 Fetch Analytics
+  // 📊 Fetch Analytics
   const fetchAnalytics = async () => {
     try {
       const res = await fetchWithAuth(`${API_BASE}/analytics/student/${userId}`);
@@ -31,18 +43,19 @@ export default function StudentDashboard() {
       const data = await res.json();
 
       const chartData = Array.isArray(data.trend)
-        ? data.trend.map((score, index) => ({ quiz: index + 1, score: Number(score) }))
+        ? data.trend.map((score, index) => ({
+            quiz: index + 1,
+            score: Number(score),
+          }))
         : [];
 
-      const avgScore =
-        chartData.length > 0
-          ? chartData.reduce((sum, item) => sum + item.score, 0) / chartData.length
-          : 0;
-
       setAnalytics({
-        accuracy: typeof data.accuracy === "string" ? data.accuracy : `${data.accuracy || 0}%`,
+        accuracy:
+          typeof data.accuracy === "string"
+            ? data.accuracy
+            : `${data.accuracy || 0}%`,
         totalQuizzes: data.totalQuizzes || 0,
-        avgScore: Number(data.avgScore || avgScore || 0),
+        avgScore: Number(data.avgScore || 0),
         badges: Array.isArray(data.badges) ? data.badges : [],
         chartData,
       });
@@ -57,14 +70,20 @@ export default function StudentDashboard() {
       const res = await axios.get(`${API_BASE}/resources/list`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setResources(Array.isArray(res.data) ? res.data : []);
+      const fetched = Array.isArray(res.data) ? res.data : [];
+      setResources(
+        fetched.map((r) => ({
+          ...r,
+          adaptiveDifficulty: getSavedDifficulty(r.topic),
+        }))
+      );
     } catch {
       toast.error("Failed to load resources");
       setResources([]);
     }
   };
 
-  // 🗑️ Delete Resource
+  // 🧩 Delete Resource
   const handleDeleteResource = async (id) => {
     if (!window.confirm("Delete this file?")) return;
     try {
@@ -78,13 +97,13 @@ export default function StudentDashboard() {
     }
   };
 
-  // 🧩 Fetch Quiz Attempts
+  // 📘 Fetch Quiz Attempts
   const fetchQuizAttempts = async () => {
     try {
       const res = await axios.get(`${API_BASE}/quiz/attempts/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setQuizAttempts(Array.isArray(res.data) && res.data.length > 0 ? res.data : []);
+      setQuizAttempts(Array.isArray(res.data) ? res.data : []);
     } catch {
       setQuizAttempts([]);
     }
@@ -92,44 +111,49 @@ export default function StudentDashboard() {
 
   // ====================== QUIZ HANDLERS ======================
 
-  // Show modal for quiz selection (instead of direct start)
-  const openQuizModal = (topic) => {
-    setSelectedTopic(topic);
-    setShowQuizModal(true);
+  const handleGenerateClick = (topic) => {
+    setQuizPrompt({
+      visible: true,
+      topic,
+      difficulty: getSavedDifficulty(topic),
+      questionCount: 10,
+    });
   };
 
-  const handleStartQuiz = (difficulty) => {
-    setShowQuizModal(false);
-    toast.info(`Starting ${selectedTopic} quiz (${difficulty})...`);
-    navigate(`/quiz?topic=${encodeURIComponent(selectedTopic)}&difficulty=${difficulty}`);
-  };
+  const handleStartQuiz = async (topic, difficulty, questionCount) => {
+    const trimmedTopic = topic.trim();
+    if (!trimmedTopic) return toast.warn("Please provide a valid topic.");
 
-  const renderQuizModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-96">
-        <h2 className="text-lg font-semibold text-gray-800 text-center mb-3">
-          Select difficulty for "{selectedTopic}"
-        </h2>
-        <div className="flex justify-around mb-4">
-          {["easy", "medium", "hard"].map((level) => (
-            <button
-              key={level}
-              onClick={() => handleStartQuiz(level)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition"
-            >
-              {level.charAt(0).toUpperCase() + level.slice(1)}
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={() => setShowQuizModal(false)}
-          className="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 rounded-md"
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
-  );
+    toast.info(`🤖 Generating ${questionCount} ${difficulty} questions for '${trimmedTopic}'...`);
+
+    try {
+      const resource = resources.find(
+        (r) => r.topic?.toLowerCase() === trimmedTopic.toLowerCase()
+      );
+
+      const resourceId = resource?.id;
+      const result = await generateAIQuiz(
+        resourceId,
+        trimmedTopic,
+        difficulty,
+        questionCount,
+        token
+      );
+
+      if (result && result.questions?.length > 0) {
+        localStorage.setItem("aiQuizData", JSON.stringify(result));
+        saveDifficulty(trimmedTopic, difficulty);
+        toast.success(`✅ AI quiz ready! (${result.questions.length} questions)`);
+        navigate(`/quiz?topic=${encodeURIComponent(trimmedTopic)}&difficulty=${difficulty}`);
+      } else {
+        toast.warn("⚠️ No questions generated. Using fallback.");
+        navigate(`/quiz?topic=${encodeURIComponent(trimmedTopic)}&difficulty=${difficulty}`);
+      }
+    } catch (err) {
+      console.error("❌ AI quiz generation failed:", err);
+      toast.error("Failed to generate AI quiz. Check backend logs for details.");
+    }
+  };
 
   // ====================== INITIAL LOAD ======================
 
@@ -142,10 +166,29 @@ export default function StudentDashboard() {
     fetchQuizAttempts();
   }, []);
 
+  // ====================== BADGE HELPER ======================
+
+  const renderBadge = (difficulty) => {
+    const colors = {
+      easy: "bg-green-100 text-green-800 border-green-400",
+      medium: "bg-yellow-100 text-yellow-800 border-yellow-400",
+      hard: "bg-red-100 text-red-800 border-red-400",
+    };
+    return (
+      <span
+        className={`text-xs font-semibold px-2 py-1 border rounded-md ${
+          colors[difficulty] || colors.medium
+        }`}
+      >
+        {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+      </span>
+    );
+  };
+
   // ====================== RENDER SECTIONS ======================
 
   const renderLearning = () => (
-    <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+    <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 relative">
       <h2 className="text-lg font-semibold mb-4 text-gray-800">📚 My Learning</h2>
       <ResourceUpload onUploadSuccess={fetchResources} />
       <h3 className="mt-6 font-medium text-gray-700 mb-2">Uploaded Resources</h3>
@@ -157,6 +200,7 @@ export default function StudentDashboard() {
           <thead className="bg-gray-100 text-gray-700">
             <tr>
               <th className="px-3 py-2 text-left">Topic</th>
+              <th className="px-3 py-2 text-left">Adaptive Level</th>
               <th className="px-3 py-2 text-left">Uploaded</th>
               <th className="px-3 py-2 text-center">Actions</th>
             </tr>
@@ -164,15 +208,14 @@ export default function StudentDashboard() {
           <tbody>
             {resources.map((r) => (
               <tr key={r.id} className="border-t">
-                <td className="px-3 py-2 font-medium text-gray-800">
-                  {r.topic || r.fileName}
-                </td>
+                <td className="px-3 py-2 font-medium text-gray-800">{r.topic || r.fileName}</td>
+                <td className="px-3 py-2">{renderBadge(r.adaptiveDifficulty)}</td>
                 <td className="px-3 py-2 text-gray-500 text-xs">
                   {new Date(r.uploadedAt).toLocaleDateString()}
                 </td>
                 <td className="px-3 py-2 text-center space-x-2">
                   <button
-                    onClick={() => openQuizModal(r.topic || "General")}
+                    onClick={() => handleGenerateClick(r.topic || "General")}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm"
                   >
                     Generate Quiz
@@ -189,6 +232,71 @@ export default function StudentDashboard() {
           </tbody>
         </table>
       )}
+
+      {quizPrompt.visible && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-sm">
+            <h3 className="font-semibold text-gray-800 mb-4 text-center">
+              Generate Quiz for: <span className="text-blue-700">{quizPrompt.topic}</span>
+            </h3>
+
+            <div className="flex justify-center gap-3 mb-5">
+              {["easy", "medium", "hard"].map((level) => (
+                <button
+                  key={level}
+                  onClick={() => setQuizPrompt((p) => ({ ...p, difficulty: level }))}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+                    quizPrompt.difficulty === level
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                  }`}
+                >
+                  {level.charAt(0).toUpperCase() + level.slice(1)}
+                </button>
+              ))}
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm text-gray-700 mb-1">Number of Questions</label>
+              <input
+                type="number"
+                min="1"
+                max="30"
+                value={quizPrompt.questionCount}
+                onChange={(e) =>
+                  setQuizPrompt((p) => ({
+                    ...p,
+                    questionCount: Number(e.target.value),
+                  }))
+                }
+                className="w-full border border-gray-300 rounded-lg p-2 text-sm"
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={() => setQuizPrompt({ ...quizPrompt, visible: false })}
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setQuizPrompt({ ...quizPrompt, visible: false });
+                  handleStartQuiz(
+                    quizPrompt.topic,
+                    quizPrompt.difficulty,
+                    quizPrompt.questionCount
+                  );
+                }}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
+              >
+                Generate
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -202,7 +310,7 @@ export default function StudentDashboard() {
           {["AI Basics", "Python Fundamentals", "Database Systems", "Mathematics", "General Knowledge"].map((topic) => (
             <button
               key={topic}
-              onClick={() => openQuizModal(topic)}
+              onClick={() => handleGenerateClick(topic)}
               className="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-lg shadow-md m-2 transition"
             >
               Start {topic} Quiz
@@ -219,8 +327,8 @@ export default function StudentDashboard() {
             </tr>
           </thead>
           <tbody>
-            {quizAttempts.map((q) => (
-              <tr key={q.id} className="border-t">
+            {quizAttempts.map((q, index) => (
+              <tr key={index} className="border-t">
                 <td className="px-3 py-2">{q.topic}</td>
                 <td className="px-3 py-2 text-blue-600 font-semibold">{q.score}%</td>
                 <td className="px-3 py-2 text-gray-500">
@@ -272,15 +380,10 @@ export default function StudentDashboard() {
     </div>
   );
 
-  // ====================== RENDER MAIN ======================
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 relative">
-      {showQuizModal && renderQuizModal()}
-
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4">🎓 Student Dashboard</h1>
-
         <div className="flex gap-3 mb-6">
           {[
             { id: "learning", label: "📚 My Learning" },

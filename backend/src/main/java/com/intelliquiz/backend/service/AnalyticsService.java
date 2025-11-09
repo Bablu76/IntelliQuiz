@@ -7,8 +7,12 @@ import com.intelliquiz.backend.repository.QuizAttemptRepository;
 import com.intelliquiz.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -125,22 +129,42 @@ public class AnalyticsService {
     /**
      * ✅ Leaderboard - unchanged but hardened
      */
+    @PreAuthorize("permitAll()")
     public List<Map<String, Object>> getLeaderboard(int limit) {
-        log.info("🏆 Fetching top {} users for leaderboard", limit);
-        List<User> topUsers = userRepository.findTopUsers(PageRequest.of(0, limit));
+        var users = userRepository.findAll();
 
-        return topUsers.stream().map(u -> {
-            Map<String, Object> entry = new HashMap<>();
-            entry.put("username", u.getUsername());
-            entry.put("points", u.getPoints());
-            entry.put("badges", Arrays.stream(
-                            Optional.ofNullable(u.getBadges()).orElse("")
-                                    .split(","))
-                    .filter(s -> !s.isBlank())
-                    .collect(Collectors.toList()));
-            return entry;
-        }).collect(Collectors.toList());
+        // ✅ Filter: only STUDENT roles
+        var leaderboard = users.stream()
+                .filter(u -> u.getRoles() != null && u.getRoles().stream()
+                        .anyMatch(r -> String.valueOf(r.getName())
+                                .toUpperCase()
+                                .contains("STUDENT")))
+                // ✅ Sort by points descending
+                .sorted(Comparator.comparingInt(u -> {
+                    try {
+                        var pointsField = User.class.getDeclaredField("points");
+                        pointsField.setAccessible(true);
+                        Integer points = (Integer) pointsField.get(u);
+                        return points != null ? points : 0;
+                    } catch (Exception e) {
+                        return 0;
+                    }
+                }).reversed())
+                // ✅ Limit and map clean DTO
+                .limit(limit)
+                .map(u -> Map.of(
+                        "id", u.getId(),
+                        "username", u.getUsername(),
+                        "points", Optional.ofNullable(u.getPoints()).orElse(0),
+                        "badges", Optional.ofNullable(u.getBadges()).orElse(""),
+                        "roles", u.getRoles().stream().map(r -> r.getName().toString()).toList()
+                ))
+                .toList();
+
+        log.info("📊 Leaderboard built → {} students (filtered from total={})", leaderboard.size(), users.size());
+        return leaderboard;
     }
+
 
     // ==============================
     // 🎮 Gamification Logic (unchanged)

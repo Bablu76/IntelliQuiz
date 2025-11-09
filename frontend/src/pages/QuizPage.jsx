@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { mockQuizzes } from "../data/mockQuizData"; // ✅ import our local quiz data
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { submitQuiz } from "../utils/quizApi";
 
 const QuizPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-
-  const topic = queryParams.get("topic") || "General Knowledge";
-  const difficulty = queryParams.get("difficulty") || "medium";
-
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState([]);
@@ -19,58 +13,54 @@ const QuizPage = () => {
   const [score, setScore] = useState(null);
   const [recommendedDifficulty, setRecommendedDifficulty] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [quizId, setQuizId] = useState(null);
+  const [topic, setTopic] = useState("General Knowledge");
+  const [difficulty, setDifficulty] = useState("medium");
+  const [startTime, setStartTime] = useState(null);
 
-  const API_BASE = import.meta.env.VITE_API_URL;
-  const token = localStorage.getItem("token");
-
-  // 🎯 Generate quiz on load
+  // ✅ Load quiz data from localStorage
   useEffect(() => {
-    generateQuiz();
-  }, [topic, difficulty]);
-
-  const generateQuiz = async () => {
-    setLoading(true);
     try {
-      console.log(`🎯 Generating quiz for ${topic} (${difficulty})`);
-      const response = await fetch(
-        `${API_BASE}/quiz/generate?topic=${encodeURIComponent(topic)}&difficulty=${difficulty}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      console.log("🔹 QuizPage loaded!");
+      const stored = localStorage.getItem("aiQuizData");
+      if (!stored) {
+        toast.warn("⚠️ No quiz found. Please generate one first!");
+        navigate("/student/dashboard");
+        return;
+      }
 
-      if (!response.ok) throw new Error(`Backend quiz failed (${response.status})`);
-      const data = await response.json();
+      const parsed = JSON.parse(stored);
+      if (!parsed?.questions?.length) {
+        toast.warn("⚠️ Stored quiz has no questions!");
+        navigate("/student/dashboard");
+        return;
+      }
 
-      const validQuestions = Array.isArray(data.questions)
-        ? data.questions.slice(0, 5)
-        : [];
+      console.log("✅ Loaded AI Quiz:", parsed);
 
-      if (validQuestions.length === 0) throw new Error("No questions received");
-
-      setQuestions(validQuestions);
-      setSelectedAnswers(new Array(validQuestions.length).fill(null));
+      setQuestions(parsed.questions);
+      setQuizId(parsed.quizId || null);
+      setTopic(parsed.topic || "General Knowledge");
+      setDifficulty(parsed.difficulty || "medium");
+      setSelectedAnswers(new Array(parsed.questions.length).fill(null));
+      setStartTime(Date.now());
       setLoading(false);
     } catch (err) {
-      console.warn("⚠️ Using mock quiz fallback:", err.message);
-      const fallback = mockQuizzes[topic] || mockQuizzes["General Knowledge"];
-      const mockSet = fallback.questions.slice(0, 5);
-      setQuestions(mockSet);
-      setSelectedAnswers(new Array(mockSet.length).fill(null));
-      setLoading(false);
-      toast.info("Loaded mock quiz questions.");
+      console.error("❌ Failed to parse stored quiz:", err);
+      toast.error("Quiz loading failed.");
+      navigate("/student/dashboard");
     }
+  }, []);
+
+  // 🧠 Handle answer select
+  const handleOptionSelect = (index) => {
+    setSelectedOption(index);
   };
 
-  // 🧠 Handle answer selection
-  const handleOptionSelect = (optionIndex) => {
-    setSelectedOption(optionIndex);
-  };
-
-  // ⏭️ Next Question or Submit
+  // ⏭️ Next or Submit
   const handleNext = () => {
     if (selectedOption === null) {
-      toast.warn("Please select an answer before proceeding.");
+      toast.warn("Please select an answer before continuing.");
       return;
     }
 
@@ -82,11 +72,11 @@ const QuizPage = () => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption(newAnswers[currentQuestionIndex + 1]);
     } else {
-      submitQuiz(newAnswers);
+      submitQuizAnswers(newAnswers);
     }
   };
 
-  // ⏮️ Previous Question
+  // ⏮️ Previous
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -94,75 +84,85 @@ const QuizPage = () => {
     }
   };
 
-  // 📤 Submit Quiz
-  const submitQuiz = async (answers) => {
+  // 📤 Submit quiz to backend
+  const submitQuizAnswers = async (answers) => {
     try {
-      const formattedAnswers = questions.map((q, index) => {
-        const selected = answers[index];
-        const selectedOptionText = q.options[selected];
-        const correct = selectedOptionText === q.answer;
-        return { questionId: q.questionId || index + 1, isCorrect: correct };
-      });
+      const formattedAnswers = answers.map((idx) => ({
+        selectedIndex: idx,
+      }));
 
-      const response = await fetch(`${API_BASE}/quiz/submit`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          topic,
-          difficulty,
-          userId: parseInt(localStorage.getItem("userId")),
-          answers: formattedAnswers,
-        }),
-      });
+      const timeTakenSec = startTime ? Math.round((Date.now() - startTime) / 1000) : 0;
 
-      if (!response.ok) throw new Error(`Quiz submission failed (${response.status})`);
-      const result = await response.json();
+      const payload = {
+        quizId,
+        topic,
+        difficulty,
+        answers: formattedAnswers,
+        timeTaken: timeTakenSec,
+      };
 
-      setScore(result.scorePercentage || 0);
-      setRecommendedDifficulty(result.nextLevel || "medium");
+      console.log("📦 Submitting payload:", payload);
+
+      toast.info("📤 Submitting quiz...");
+
+      const result = await submitQuiz(payload);
+      console.log("✅ Submission response:", result);
+
+      const scorePercent = result.scorePercent ?? result.scorePercentage ?? 0;
+      setScore(scorePercent);
+      setRecommendedDifficulty(result.nextDifficulty || "medium");
       setQuizCompleted(true);
+
+      // 🧹 Cleanup stored quiz data
+      localStorage.removeItem("aiQuizData");
+
+      toast.success(`✅ Quiz submitted! Score: ${scorePercent}%`);
     } catch (err) {
-      console.error("❌ Quiz submission error:", err);
-      toast.error("Quiz submission failed. Showing mock result.");
-      const correctCount = selectedAnswers.reduce(
-        (acc, sel, i) => (questions[i].options[sel] === questions[i].answer ? acc + 1 : acc),
+      console.error("❌ Quiz submission failed:", err);
+      toast.error("Submission failed. Calculating locally...");
+
+      // fallback to local evaluation
+      const correctCount = answers.reduce(
+        (acc, idx, i) =>
+          idx !== null && questions[i]?.options?.[idx] === questions[i]?.answer ? acc + 1 : acc,
         0
       );
       const scorePercent = Math.round((correctCount / questions.length) * 100);
       setScore(scorePercent);
-      setRecommendedDifficulty(scorePercent > 80 ? "hard" : scorePercent < 50 ? "easy" : "medium");
+      setRecommendedDifficulty(
+        scorePercent > 80 ? "hard" : scorePercent < 50 ? "easy" : "medium"
+      );
       setQuizCompleted(true);
     }
   };
 
-  const handleRetakeQuiz = () => {
+  // ♻️ Restart or Retake
+  const handleRetake = () => {
     setQuizCompleted(false);
     setCurrentQuestionIndex(0);
-    setSelectedAnswers([]);
+    setSelectedAnswers(new Array(questions.length).fill(null));
     setSelectedOption(null);
     setScore(null);
     setRecommendedDifficulty(null);
-    generateQuiz();
+    setStartTime(Date.now());
   };
 
+  // 🏠 Back to Dashboard
   const handleBackToDashboard = () => {
     navigate("/student/dashboard");
   };
 
-  // 🌀 Loading
+  // 🌀 Loading UI
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        <p className="mt-4 text-gray-600">Generating quiz for {topic}...</p>
+        <p className="mt-4 text-gray-600">Loading your quiz...</p>
       </div>
     );
   }
 
-  // ✅ Quiz Completed
+  // ✅ Completed View
   if (quizCompleted) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
@@ -174,8 +174,9 @@ const QuizPage = () => {
             Recommended Next Level:{" "}
             <span className="text-purple-600 font-semibold">{recommendedDifficulty}</span>
           </p>
+
           <button
-            onClick={handleRetakeQuiz}
+            onClick={handleRetake}
             className="w-full bg-blue-600 text-white py-3 rounded-lg mb-2 hover:bg-blue-700 transition"
           >
             Retake Quiz
@@ -191,7 +192,7 @@ const QuizPage = () => {
     );
   }
 
-  // 🎯 Quiz in Progress
+  // 🎯 Active Quiz View
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
@@ -199,7 +200,9 @@ const QuizPage = () => {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-bold text-gray-800">🧠 {topic} Quiz</h1>
+          <h1 className="text-2xl font-bold text-gray-800">
+            🧠 {topic} Quiz ({difficulty})
+          </h1>
           <span className="text-sm text-gray-600 bg-blue-100 px-3 py-1 rounded-full">
             Question {currentQuestionIndex + 1} of {questions.length}
           </span>
@@ -212,7 +215,9 @@ const QuizPage = () => {
           ></div>
         </div>
 
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">{currentQuestion?.question}</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">
+          {currentQuestion?.question}
+        </h2>
 
         <div className="space-y-3 mb-6">
           {currentQuestion?.options?.map((option, index) => (

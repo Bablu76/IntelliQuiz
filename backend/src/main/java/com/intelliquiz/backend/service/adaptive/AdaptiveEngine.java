@@ -11,13 +11,11 @@ import java.util.List;
 
 /**
  * 🎯 AdaptiveEngine
- * Learns from user's historical quiz performance and intelligently suggests
- * the next difficulty level for quizzes.
- *
+ * Learns from user’s past quiz performance and determines next difficulty level.
  * Logic:
- *  - Uses the user's average score across the last N attempts (topic-based)
- *  - Considers both performance trend and last attempted difficulty
- *  - Default difficulty is "medium" for new learners
+ *  - Evaluates average score + trend for each topic
+ *  - Adjusts difficulty progressively after each quiz submission
+ *  - Never changes difficulty before the first attempt
  */
 @Service
 public class AdaptiveEngine {
@@ -31,63 +29,101 @@ public class AdaptiveEngine {
         this.quizAttemptRepository = quizAttemptRepository;
     }
 
-    /**
-     * Determines next quiz difficulty for the given user and topic.
-     * @param userId user ID
-     * @param topic quiz topic
-     * @return suggested difficulty level ("easy", "medium", or "hard")
-     */
+    // -------------------------------------------------------------------------
+    // 🧠 1️⃣ Suggest Next Difficulty (used only if user already attempted)
+    // -------------------------------------------------------------------------
     public String suggestNextDifficulty(Long userId, String topic) {
         try {
             List<QuizAttempt> attempts = quizAttemptRepository.findByUserIdAndTopic(userId, topic);
 
             if (attempts == null || attempts.isEmpty()) {
-                log.info("🧩 No past attempts for user {} topic '{}'. Returning 'medium' as default.", userId, topic);
+                log.info("🧩 No past attempts for user={} topic='{}'. Defaulting to 'medium'.", userId, topic);
                 return "medium";
             }
 
-            // Compute average score across attempts
-            double avgScore = attempts.stream()
-                    .mapToInt(QuizAttempt::getScore)
-                    .average()
-                    .orElse(0);
-
-            // Extract last attempt difficulty
+            double avgScore = attempts.stream().mapToInt(QuizAttempt::getScore).average().orElse(0);
             QuizAttempt lastAttempt = attempts.get(attempts.size() - 1);
-            String lastDifficulty = lastAttempt.getDifficultyLevel();
-
-            // Compute improvement trend (compare last vs avg)
             double lastScore = lastAttempt.getScore();
-            double trendDelta = lastScore - avgScore;
+            String lastDiff = lastAttempt.getDifficultyLevel();
 
-            String nextDifficulty = computeNextDifficulty(avgScore, trendDelta, lastDifficulty);
+            double trend = lastScore - avgScore;
+            String next = computeNextDifficulty(avgScore, trend, lastDiff);
 
-            log.info("🧠 AdaptiveEngine Decision → user={} | topic='{}' | avgScore={} | lastScore={} | trendΔ={} | last='{}' → next='{}'",
-                    userId, topic, avgScore, lastScore, trendDelta, lastDifficulty, nextDifficulty);
+            log.info("""
+                    🧠 Adaptive Decision
+                    ├─ User: {}
+                    ├─ Topic: '{}'
+                    ├─ Avg Score: {}
+                    ├─ Last Score: {}
+                    ├─ Trend Δ: {}
+                    ├─ Last Difficulty: {}
+                    └─ Next Difficulty: {}
+                    """, userId, topic, avgScore, lastScore, trend, lastDiff, next);
 
-            return nextDifficulty;
-
+            return next;
         } catch (Exception e) {
-            log.error("⚠️ AdaptiveEngine failed for user {} topic '{}': {}", userId, topic, e.getMessage());
+            log.error("⚠️ AdaptiveEngine failure for user={} topic='{}': {}", userId, topic, e.getMessage());
             return "medium";
         }
     }
 
-    /**
-     * Internal logic for computing next difficulty based on current performance metrics.
-     */
+    // -------------------------------------------------------------------------
+    // 🧩 2️⃣ Compute Difficulty Logic
+    // -------------------------------------------------------------------------
     private String computeNextDifficulty(double avgScore, double trendDelta, String lastDifficulty) {
-        // 🔹 Adaptive rules:
-        // - Average >= 85 → harder level
-        // - Average <= 50 → easier level
-        // - Moderate → stay same
-        // - Trend improvements accelerate progression
-
         if (avgScore >= 85 || (trendDelta > 10 && !"hard".equalsIgnoreCase(lastDifficulty))) {
             return "hard";
         } else if (avgScore <= 50 || (trendDelta < -10 && !"easy".equalsIgnoreCase(lastDifficulty))) {
             return "easy";
         } else {
+            return "medium";
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // 🧩 3️⃣ Get Last Attempted Difficulty (for same topic)
+    // -------------------------------------------------------------------------
+    public String getLastDifficulty(Long userId, String topic) {
+        try {
+            List<QuizAttempt> attempts = quizAttemptRepository.findByUserIdAndTopic(userId, topic);
+            if (attempts == null || attempts.isEmpty()) {
+                log.info("🆕 New topic '{}' for user={} → Starting at 'medium'.", topic, userId);
+                return "medium";
+            }
+
+            QuizAttempt last = attempts.get(attempts.size() - 1);
+            String lastDiff = last.getDifficultyLevel() != null ? last.getDifficultyLevel() : "medium";
+            log.info("📊 Retrieved last difficulty='{}' for user={} topic='{}'", lastDiff, userId, topic);
+            return lastDiff;
+        } catch (Exception e) {
+            log.warn("⚠️ getLastDifficulty failed for user={} topic='{}': {}", userId, topic, e.getMessage());
+            return "medium";
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // 🧩 4️⃣ Update After Submission (called once user completes a quiz)
+    // -------------------------------------------------------------------------
+    public String updateAfterSubmission(Long userId, String topic, int score, String prevDifficulty) {
+        try {
+            String next = "medium";
+
+            if (score >= 85 && !"hard".equalsIgnoreCase(prevDifficulty)) next = "hard";
+            else if (score <= 50 && !"easy".equalsIgnoreCase(prevDifficulty)) next = "easy";
+            else next = prevDifficulty; // maintain same level
+
+            log.info("""
+                    📈 Adaptive Update (After Submission)
+                    ├─ User: {}
+                    ├─ Topic: '{}'
+                    ├─ Score: {}
+                    ├─ Previous Difficulty: {}
+                    └─ Next Difficulty: {}
+                    """, userId, topic, score, prevDifficulty, next);
+
+            return next;
+        } catch (Exception e) {
+            log.error("❌ Adaptive update failed for user={} topic='{}': {}", userId, topic, e.getMessage());
             return "medium";
         }
     }

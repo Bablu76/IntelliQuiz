@@ -36,4 +36,6 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
 
 
     List<QuizAttempt> findByUserIdAndTopic(Long userId, String topic);
+
+    boolean existsByUserIdAndTopic(Long id, String topic);
 }

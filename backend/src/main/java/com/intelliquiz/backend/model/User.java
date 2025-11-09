@@ -10,8 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Setter
 @Getter
+@Setter
 @Entity
 @Table(name = "users")
 @JsonIgnoreProperties({"password", "quizAttempts", "roles"})

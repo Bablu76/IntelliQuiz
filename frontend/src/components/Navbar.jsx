@@ -43,7 +43,7 @@ export default function Navbar() {
                 📊 Dashboard
               </Link>
               <Link
-                to="/quiz"
+                to="student/quizzes"
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   isActive("/quiz")
                     ? "bg-white text-blue-600 shadow-md"

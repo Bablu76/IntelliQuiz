@@ -11,10 +11,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.52.5",
     "axios": "^1.12.2",
+    "framer-motion": "^12.23.24",
+    "lucide-react": "^0.553.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.4",
+    "react-router": "^7.9.5",
+    "react-router-dom": "^7.9.5",
     "react-toastify": "^11.0.5",
     "recharts": "^3.2.1"
   },

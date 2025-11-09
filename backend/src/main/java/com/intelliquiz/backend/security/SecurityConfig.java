@@ -21,7 +21,7 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-public class WebSecurityConfig {
+public class SecurityConfig {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtUtils jwtUtils;
@@ -56,22 +56,37 @@ public class WebSecurityConfig {
                         // Public endpoints
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/error", "/actuator/**").permitAll()
-
                         // Quiz endpoints → any authenticated user
-                        .requestMatchers("/quiz/**").hasAnyRole("STUDENT", "TEACHER", "ADMIN")
 
+
+//                        // 🔓 Testing
+//                        .requestMatchers(
+//                                "/auth/**",
+//                                "/error",
+//                                "/actuator/**",
+//                                "/quiz/test/**",       // ✅ allow /quiz/test/pdf + /quiz/test/llm
+//                                "/quiz/generate/**",   // allow general quiz generation
+//                                "/quiz/submit",        // allow quiz submission
+//                                "/resources/**",       // allow file uploads/listing
+//                                "/uploads/**").permitAll() // ✅ temporary testing
+
+
+
+
+
+                                .requestMatchers("/quiz/**").hasAnyRole("STUDENT", "TEACHER", "ADMIN")
                         // Student analytics → all authenticated roles
                         .requestMatchers("/analytics/student/**").hasAnyRole("STUDENT", "TEACHER", "ADMIN")
-
                         // Classroom analytics → teachers & admins only
                         .requestMatchers("/analytics/classroom/**").hasAnyRole("TEACHER", "ADMIN")
+
+                        .requestMatchers("/resources/**").hasAnyRole("STUDENT", "TEACHER", "ADMIN")
 
                         // Role-specific endpoints
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/student/**").hasRole("STUDENT")
 
-                        .requestMatchers("/quiz/test/**").permitAll()
                         // Everything else requires authentication
                         .anyRequest().authenticated()
                 );
@@ -85,13 +100,13 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("http://localhost:5173")); // 🔒 Replace with prod domain
+        config.setAllowedOriginPatterns(List.of("http://localhost:5173")); // Frontend
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
+        config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
+
 }
