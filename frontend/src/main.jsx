@@ -29,38 +29,18 @@ function Layout() {
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route
-          path="/student/dashboard"
-          element={
-            <ProtectedRoute requiredRoles={["ROLE_STUDENT"]}>
-              <StudentDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/student/quizzes"
-          element={
-            <ProtectedRoute requiredRoles={["ROLE_STUDENT"]}>
-              <QuizHome />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/quiz"
-          element={
-            <ProtectedRoute requiredRoles={["ROLE_STUDENT"]}>
-              <QuizPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/quiz/start"
-          element={
-            <ProtectedRoute requiredRoles={["ROLE_STUDENT"]}>
-              <QuizPage />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/student/dashboard" element={
+            <ProtectedRoute requiredRoles={["ROLE_STUDENT"]}><StudentDashboard /></ProtectedRoute>
+          }/>
+        <Route path="/student/quizzes" element={
+            <ProtectedRoute requiredRoles={["ROLE_STUDENT"]}><QuizHome /></ProtectedRoute>
+          }/>
+        <Route path="/quiz" element={
+          <ProtectedRoute requiredRoles={["ROLE_STUDENT"]}><QuizPage /></ProtectedRoute>
+          }/>
+        <Route path="/quiz/start" element={
+            <ProtectedRoute requiredRoles={["ROLE_STUDENT"]}> <QuizPage /> </ProtectedRoute>
+          }/>
         <Route
           path="/quiz/generate"
           element={
@@ -108,3 +88,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+
+

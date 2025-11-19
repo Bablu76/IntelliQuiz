@@ -99,7 +99,7 @@ export default function RegisterPage() {
           📝 Create Account
         </h2>
 
-        {/* Debug Info */}
+        {/* Debug Info
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
           <p className="text-blue-700 font-semibold">Debug Mode Active</p>
           <p className="text-blue-600 text-xs mt-1">
@@ -108,7 +108,7 @@ export default function RegisterPage() {
           <p className="text-blue-600 text-xs">
             Open Console (F12) for detailed logs
           </p>
-        </div>
+        </div> */}
 
         {/* Success Message */}
         {success && (
