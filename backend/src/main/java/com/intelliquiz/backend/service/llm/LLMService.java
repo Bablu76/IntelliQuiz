@@ -66,7 +66,7 @@ public class LLMService {
         List<Map<String, Object>> allQuestions = new ArrayList<>();
 
         List<String> chunks = createFixedChunks(fullContext);
-        log.info("🧩 Using fixed chunking → {} chunks of 50k chars", chunks.size());
+        log.info("🧩 Using fixed chunking → {} chunks of 100k chars", chunks.size());
 
         for (int i = 0; i < chunks.size() && allQuestions.size() < totalCount; i++) {
 
@@ -104,7 +104,7 @@ public class LLMService {
     // ✂️ FIXED 50,000 CHAR CHUNKS
     // ------------------------------------------------------------------------
     private List<String> createFixedChunks(String text) {
-        int chunkSize = 50_000;
+        int chunkSize = 100_000;
         List<String> list = new ArrayList<>();
         for (int i = 0; i < text.length(); i += chunkSize) {
             list.add(text.substring(i, Math.min(i + chunkSize, text.length())).trim());

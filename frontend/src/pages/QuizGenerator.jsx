@@ -23,35 +23,33 @@ export default function QuizGenerator() {
     setStatus("Extracting content and generating quiz...");
 
     try {
-      // 🧩 1️⃣ Request backend to generate quiz
-      const result = await generateAIQuiz(file, topic, difficulty, questionCount);
+      const token = localStorage.getItem("token");
+
+      const result = await generateAIQuiz(
+        file,
+        topic,
+        difficulty,
+        questionCount,
+        token
+      );
 
       if (!result || !result.questions) {
         setStatus("❌ No questions returned from AI generator.");
         return;
       }
 
-      // 🧩 2️⃣ Save locally for persistence
       const quizData = {
+        quizId: result.quizId || Date.now(),
         questions: result.questions,
         topic,
         difficulty,
         questionCount,
         generatedAt: new Date().toISOString(),
       };
+
       localStorage.setItem("aiQuizData", JSON.stringify(quizData));
 
-      // 🧩 3️⃣ Log success
-      setStatus(
-        `✅ Generated ${result.questionsGenerated || result.questions.length} questions in ${
-          result.generationTimeMs || 0
-        }ms`
-      );
-
-      // 🧩 4️⃣ Navigate to main Quiz Page with context
-      navigate(`/quiz?topic=${encodeURIComponent(topic)}&difficulty=${difficulty}`, {
-        state: { fromAI: true },
-      });
+      navigate(`/quiz?topic=${encodeURIComponent(topic)}&difficulty=${difficulty}`);
     } catch (err) {
       console.error("❌ Quiz generation failed:", err);
       setStatus("❌ Quiz generation failed. " + (err.response?.data?.error || err.message));
@@ -78,7 +76,6 @@ export default function QuizGenerator() {
         </h1>
 
         <div className="flex flex-col gap-3 mb-6">
-          {/* 🗂️ File Input */}
           <input
             type="file"
             accept="application/pdf"
@@ -86,16 +83,14 @@ export default function QuizGenerator() {
             className="border p-2 rounded-lg"
           />
 
-          {/* 🧩 Topic */}
           <input
             type="text"
-            placeholder="Enter topic (e.g. Machine Learning)"
+            placeholder="Enter topic"
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             className="border p-2 rounded-lg"
           />
 
-          {/* 🎚️ Difficulty */}
           <select
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value)}
@@ -106,26 +101,19 @@ export default function QuizGenerator() {
             <option value="hard">Hard</option>
           </select>
 
-          {/* 🔢 Question Count */}
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-700 mb-1 font-medium">
-              Number of Questions
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="30"
-              value={questionCount}
-              onChange={(e) => setQuestionCount(Number(e.target.value))}
-              className="border p-2 rounded-lg w-full"
-            />
-          </div>
+          <input
+            type="number"
+            min="1"
+            max="30"
+            value={questionCount}
+            onChange={(e) => setQuestionCount(Number(e.target.value))}
+            className="border p-2 rounded-lg"
+          />
 
-          {/* 🚀 Generate Button */}
           <button
             onClick={handleGenerate}
             disabled={loading}
-            className={`w-full py-2 rounded-lg text-white transition ${
+            className={`w-full py-2 rounded-lg text-white ${
               loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
@@ -133,10 +121,7 @@ export default function QuizGenerator() {
           </button>
         </div>
 
-        {/* 💬 Status message */}
-        {status && (
-          <p className="text-sm text-center text-gray-700 mb-4">{status}</p>
-        )}
+        {status && <p className="text-sm text-center text-gray-700">{status}</p>}
       </motion.div>
     </motion.div>
   );
