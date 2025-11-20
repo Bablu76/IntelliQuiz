@@ -1,21 +1,21 @@
-2025-11-19T22:44:06.737+05:30  INFO 10316 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 10316 (C:\Shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\Shared\Projects\IntelliQuiz\backend)
-2025-11-19T22:44:06.759+05:30 DEBUG 10316 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
-2025-11-19T22:44:06.761+05:30  INFO 10316 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
-2025-11-19T22:44:09.426+05:30  INFO 10316 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-11-19T22:44:10.287+05:30  INFO 10316 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 752 ms. Found 7 JPA repository interfaces.
-2025-11-19T22:44:13.694+05:30  INFO 10316 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-11-19T22:44:13.730+05:30  INFO 10316 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-11-19T22:44:13.731+05:30  INFO 10316 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
-2025-11-19T22:44:13.905+05:30  INFO 10316 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-11-19T22:44:13.906+05:30  INFO 10316 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 7027 ms
-2025-11-19T22:44:14.359+05:30  INFO 10316 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-11-19T22:44:14.606+05:30  INFO 10316 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
-2025-11-19T22:44:14.731+05:30  INFO 10316 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-11-19T22:44:15.521+05:30  INFO 10316 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-11-19T22:44:15.625+05:30  INFO 10316 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-11-19T22:44:16.226+05:30  INFO 10316 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-11-19T22:44:16.391+05:30  WARN 10316 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-11-19T22:44:16.450+05:30  INFO 10316 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-11-20T19:28:16.573+05:30  INFO 21756 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 21756 (C:\shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\shared\Projects\IntelliQuiz\backend)
+2025-11-20T19:28:16.573+05:30 DEBUG 21756 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
+2025-11-20T19:28:16.573+05:30  INFO 21756 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-11-20T19:28:17.570+05:30  INFO 21756 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-20T19:28:17.679+05:30  INFO 21756 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 89 ms. Found 7 JPA repository interfaces.
+2025-11-20T19:28:18.540+05:30  INFO 21756 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-20T19:28:18.564+05:30  INFO 21756 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-20T19:28:18.564+05:30  INFO 21756 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-20T19:28:18.637+05:30  INFO 21756 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-20T19:28:18.637+05:30  INFO 21756 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1993 ms
+2025-11-20T19:28:18.850+05:30  INFO 21756 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-20T19:28:18.960+05:30  INFO 21756 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-20T19:28:19.008+05:30  INFO 21756 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-20T19:28:19.454+05:30  INFO 21756 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-20T19:28:19.518+05:30  INFO 21756 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-20T19:28:19.797+05:30  INFO 21756 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-20T19:28:19.861+05:30  WARN 21756 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-20T19:28:19.892+05:30  INFO 21756 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 16.10
@@ -23,51 +23,76 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-11-19T22:44:18.769+05:30  INFO 10316 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-11-19T22:44:20.107+05:30  INFO 10316 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-11-19T22:44:21.792+05:30  INFO 10316 --- [backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-11-19T22:44:23.738+05:30 DEBUG 10316 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
-2025-11-19T22:44:39.289+05:30  INFO 10316 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
-2025-11-19T22:44:39.700+05:30  WARN 10316 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-11-19T22:44:41.035+05:30  WARN 10316 --- [backend] [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
-2025-11-19T22:44:41.040+05:30  INFO 10316 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-11-19T22:44:41.045+05:30  INFO 10316 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2025-11-19T22:44:41.057+05:30  INFO 10316 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2025-11-19T22:44:41.086+05:30  INFO 10316 --- [backend] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
-
-Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
-2025-11-19T22:44:41.142+05:30 ERROR 10316 --- [backend] [main] o.s.b.d.LoggingFailureAnalysisReporter   : 
-
-***************************
-APPLICATION FAILED TO START
-***************************
-
-Description:
-
-Web server failed to start. Port 8080 was already in use.
-
-Action:
-
-Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
-
-2025-11-19T22:47:10.138+05:30  INFO 17912 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 17912 (C:\Shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\Shared\Projects\IntelliQuiz\backend)
-2025-11-19T22:47:10.144+05:30 DEBUG 17912 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
-2025-11-19T22:47:10.146+05:30  INFO 17912 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
-2025-11-19T22:47:11.732+05:30  INFO 17912 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-11-19T22:47:11.886+05:30  INFO 17912 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 136 ms. Found 7 JPA repository interfaces.
-2025-11-19T22:47:12.835+05:30  INFO 17912 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
-2025-11-19T22:47:12.858+05:30  INFO 17912 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2025-11-19T22:47:12.858+05:30  INFO 17912 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
-2025-11-19T22:47:12.979+05:30  INFO 17912 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2025-11-19T22:47:12.980+05:30  INFO 17912 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2724 ms
-2025-11-19T22:47:13.222+05:30  INFO 17912 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-11-19T22:47:13.370+05:30  INFO 17912 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
-2025-11-19T22:47:13.442+05:30  INFO 17912 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2025-11-19T22:47:13.981+05:30  INFO 17912 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-11-19T22:47:14.037+05:30  INFO 17912 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2025-11-19T22:47:14.357+05:30  INFO 17912 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2025-11-19T22:47:14.421+05:30  WARN 17912 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-11-19T22:47:14.473+05:30  INFO 17912 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2025-11-20T19:28:21.224+05:30  INFO 21756 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-20T19:28:21.791+05:30  INFO 21756 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T19:28:22.247+05:30  INFO 21756 --- [backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-20T19:28:22.811+05:30 DEBUG 21756 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
+2025-11-20T19:28:23.239+05:30  INFO 21756 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-20T19:28:23.462+05:30  WARN 21756 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-20T19:28:24.198+05:30  INFO 21756 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-20T19:28:24.208+05:30  INFO 21756 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 8.309 seconds (process running for 8.837)
+2025-11-20T19:29:10.392+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-20T19:29:10.392+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-20T19:29:10.392+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-11-20T19:29:10.829+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Suser1
+2025-11-20T19:29:11.175+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : ✅ Authentication successful for Suser1
+2025-11-20T19:29:11.180+05:30 DEBUG 21756 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : 👤 Roles for Suser1: [ROLE_STUDENT]
+2025-11-20T19:29:11.264+05:30 DEBUG 21756 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : 🎫 Access token generated for Suser1
+2025-11-20T19:29:11.366+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.RefreshTokenService  : 💾 Refresh token updated for user 'Suser1' [expires: 2025-11-27T13:59:11.364106200Z]
+2025-11-20T19:29:11.507+05:30 DEBUG 21756 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : ♻️ Refresh token created for Suser1
+2025-11-20T19:29:11.896+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'Suser1'
+2025-11-20T19:29:11.896+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-7] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/1
+2025-11-20T19:29:11.943+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 1
+2025-11-20T19:29:12.019+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 1
+2025-11-20T19:29:12.280+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=1
+2025-11-20T19:29:12.295+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 1: 2 topics, 2 weak topics
+2025-11-20T19:29:35.995+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : 📤 Upload initiated by Suser1 for topic Major Documentation
+2025-11-20T19:29:38.810+05:30  WARN 21756 --- [backend] [http-nio-8080-exec-8] org.apache.fontbox.ttf.CmapSubtable      : Format 14 cmap table is not supported and will be ignored
+2025-11-20T19:29:39.126+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.PdfService           : ✅ Extracted 72146 characters from 'A10 - Major-phase-01.pdf'
+2025-11-20T19:29:39.131+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : 📄 Extracted 72146 characters from PDF 'A10 - Major-phase-01.pdf'
+2025-11-20T19:29:39.221+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.ResourceService      : 💾 File physically stored at 'C:\shared\Projects\IntelliQuiz\backend\uploads\A10 - Major-phase-01.pdf'
+2025-11-20T19:29:39.387+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.ResourceService      : ✅ Saved resource 'A10 - Major-phase-01.pdf' | topic='Major Documentation' | chars=72146 | user='Suser1'
+2025-11-20T19:29:39.394+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : ✅ Resource saved: A10 - Major-phase-01.pdf by Suser1
+2025-11-20T19:29:39.449+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-1] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'Suser1'
+2025-11-20T19:29:39.573+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.ResourceService      : 📚 3 resources fetched for userId=1
+2025-11-20T19:29:50.524+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=3 | topic='Major Documentation' | file='A10 - Major-phase-01.pdf' | chars=72146
+2025-11-20T19:29:50.524+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.QuizController    : 📘 Loaded 72146 chars from saved resource 'A10 - Major-phase-01.pdf'
+2025-11-20T19:29:50.540+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'medium'
+2025-11-20T19:29:50.540+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~72146 chars each) | total=72146 | targetQs=25
+2025-11-20T19:29:50.540+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='Major Documentation' | difficulty='medium' | chars=72146 | targetQs=25
+2025-11-20T19:29:53.755+05:30 ERROR 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.llm.LLMService       : ❌ LLM failed on chunk 1/1: 503 Service Unavailable on POST request for "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent": "{<EOL>  "error": {<EOL>    "code": 503,<EOL>    "message": "The model is overloaded. Please try again later.",<EOL>    "status": "UNAVAILABLE"<EOL>  }<EOL>}<EOL>"
+2025-11-20T19:29:53.755+05:30  WARN 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.llm.LLMService       : 🛡️ Fallback used: 1 questions for 'Major Documentation'
+2025-11-20T19:29:53.755+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='Major Documentation' | difficulty='medium' | totalQs=1 | latency=3215ms
+2025-11-20T19:29:53.772+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='Major Documentation' | difficulty='medium' | Qs=1 | 3248 ms
+2025-11-20T19:30:21.365+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/1
+2025-11-20T19:30:21.370+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 1
+2025-11-20T19:30:21.372+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 1
+2025-11-20T19:30:21.379+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-1] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'Suser1'
+2025-11-20T19:30:21.385+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 1: 2 topics, 2 weak topics
+2025-11-20T19:30:21.428+05:30  INFO 21756 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.ResourceService      : 📚 3 resources fetched for userId=1
+2025-11-20T19:44:14.807+05:30  INFO 21756 --- [backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-20T19:44:14.983+05:30  INFO 21756 --- [backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-20T19:44:14.998+05:30  INFO 21756 --- [backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T19:44:15.001+05:30  INFO 21756 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-20T19:44:15.013+05:30  INFO 21756 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-20T19:44:28.080+05:30  INFO 21048 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 21048 (C:\shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\shared\Projects\IntelliQuiz\backend)
+2025-11-20T19:44:28.083+05:30 DEBUG 21048 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
+2025-11-20T19:44:28.084+05:30  INFO 21048 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-11-20T19:44:28.985+05:30  INFO 21048 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-20T19:44:29.097+05:30  INFO 21048 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 86 ms. Found 7 JPA repository interfaces.
+2025-11-20T19:44:29.828+05:30  INFO 21048 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-20T19:44:29.844+05:30  INFO 21048 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-20T19:44:29.844+05:30  INFO 21048 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-20T19:44:29.924+05:30  INFO 21048 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-20T19:44:29.925+05:30  INFO 21048 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1779 ms
+2025-11-20T19:44:30.109+05:30  INFO 21048 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-20T19:44:30.172+05:30  INFO 21048 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-20T19:44:30.251+05:30  INFO 21048 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-20T19:44:30.577+05:30  INFO 21048 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-20T19:44:30.625+05:30  INFO 21048 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-20T19:44:30.849+05:30  INFO 21048 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-20T19:44:30.881+05:30  WARN 21048 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-20T19:44:30.930+05:30  INFO 21048 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 16.10
@@ -75,48 +100,376 @@ Identify and stop the process that's listening on port 8080 or configure this ap
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-11-19T22:47:16.424+05:30  INFO 17912 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-11-19T22:47:17.587+05:30  INFO 17912 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-11-19T22:47:18.113+05:30  INFO 17912 --- [backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-11-19T22:47:18.919+05:30 DEBUG 17912 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
-2025-11-19T22:47:19.590+05:30  INFO 17912 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
-2025-11-19T22:47:19.907+05:30  WARN 17912 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-11-19T22:47:20.839+05:30  INFO 17912 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
-2025-11-19T22:47:20.857+05:30  INFO 17912 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 11.657 seconds (process running for 12.279)
-2025-11-19T22:47:25.857+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-11-19T22:47:25.861+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2025-11-19T22:47:25.873+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 10 ms
-2025-11-19T22:47:26.829+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Suser
-2025-11-19T22:47:27.541+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : ✅ Authentication successful for Suser
-2025-11-19T22:47:27.544+05:30 DEBUG 17912 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : 👤 Roles for Suser: [ROLE_STUDENT]
-2025-11-19T22:47:27.743+05:30 DEBUG 17912 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : 🎫 Access token generated for Suser
-2025-11-19T22:47:28.622+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.RefreshTokenService  : 💾 Refresh token updated for user 'Suser' [expires: 2025-11-26T17:17:28.601771500Z]
-2025-11-19T22:47:28.749+05:30 DEBUG 17912 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.AuthController    : ♻️ Refresh token created for Suser
-2025-11-19T22:47:29.384+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/1
-2025-11-19T22:47:29.410+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-5] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'Suser'
-2025-11-19T22:47:29.718+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.QuizController    : 📜 Returned 14 quiz attempts for user 1
-2025-11-19T22:47:29.797+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 1
-2025-11-19T22:47:29.964+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.ResourceService      : 📚 4 resources fetched for userId=1
-2025-11-19T22:47:30.089+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 1: 3 topics, 3 weak topics
-2025-11-19T22:47:36.004+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=16 | topic='Physics' | file='physics-class-ix.pdf' | chars=236499
-2025-11-19T22:47:36.005+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.QuizController    : 📘 Loaded 236499 chars from saved resource 'physics-class-ix.pdf'
-2025-11-19T22:47:36.037+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'hard'
-2025-11-19T22:47:36.038+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~236499 chars each) | total=236499 | targetQs=10
-2025-11-19T22:47:36.041+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='Physics' | difficulty='hard' | chars=236499 | targetQs=10
-2025-11-19T22:48:25.746+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : ✅ Chunk 1/1 → 10 questions (10 total so far)
-2025-11-19T22:48:25.746+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='Physics' | difficulty='hard' | totalQs=10 | latency=49708ms
-2025-11-19T22:48:25.815+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='Physics' | difficulty='hard' | Qs=10 | 49873 ms
-2025-11-19T22:48:40.948+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/1
-2025-11-19T22:48:40.947+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'Suser'
-2025-11-19T22:48:40.964+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 1
-2025-11-19T22:48:40.996+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.ResourceService      : 📚 4 resources fetched for userId=1
-2025-11-19T22:48:41.002+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-4] c.i.backend.controller.QuizController    : 📜 Returned 14 quiz attempts for user 1
-2025-11-19T22:48:41.009+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 1: 3 topics, 3 weak topics
-2025-11-19T22:48:53.617+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=16 | topic='Physics' | file='physics-class-ix.pdf' | chars=236499
-2025-11-19T22:48:53.618+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-8] c.i.backend.controller.QuizController    : 📘 Loaded 236499 chars from saved resource 'physics-class-ix.pdf'
-2025-11-19T22:48:53.629+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-8] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'easy'
-2025-11-19T22:48:53.630+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~236499 chars each) | total=236499 | targetQs=8
-2025-11-19T22:48:53.632+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='Physics' | difficulty='easy' | chars=236499 | targetQs=8
-2025-11-19T22:49:12.340+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.llm.LLMService       : ✅ Chunk 1/1 → 8 questions (8 total so far)
-2025-11-19T22:49:12.341+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='Physics' | difficulty='easy' | totalQs=8 | latency=18711ms
-2025-11-19T22:49:12.349+05:30  INFO 17912 --- [backend] [http-nio-8080-exec-8] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='Physics' | difficulty='easy' | Qs=8 | 18757 ms
+2025-11-20T19:44:32.004+05:30  INFO 21048 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-20T19:44:32.567+05:30  INFO 21048 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T19:44:32.923+05:30  INFO 21048 --- [backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-20T19:44:33.558+05:30 DEBUG 21048 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
+2025-11-20T19:44:34.724+05:30  INFO 21048 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-20T19:44:35.946+05:30  WARN 21048 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-20T19:44:38.873+05:30  INFO 21048 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-20T19:44:39.188+05:30  INFO 21048 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 11.736 seconds (process running for 12.148)
+2025-11-20T19:45:55.633+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-20T19:45:55.633+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-20T19:45:55.635+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-11-20T19:45:56.186+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=3 | topic='Major Documentation' | file='A10 - Major-phase-01.pdf' | chars=72146
+2025-11-20T19:45:56.188+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.QuizController    : 📘 Loaded 72146 chars from saved resource 'A10 - Major-phase-01.pdf'
+2025-11-20T19:45:56.201+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'medium'
+2025-11-20T19:45:56.201+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~72146 chars each) | total=72146 | targetQs=25
+2025-11-20T19:45:56.201+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='Major Documentation' | difficulty='medium' | chars=72146 | targetQs=25
+2025-11-20T19:45:59.652+05:30 ERROR 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.llm.LLMService       : ❌ LLM failed on chunk 1/1: 503 Service Unavailable on POST request for "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent": "{<EOL>  "error": {<EOL>    "code": 503,<EOL>    "message": "The model is overloaded. Please try again later.",<EOL>    "status": "UNAVAILABLE"<EOL>  }<EOL>}<EOL>"
+2025-11-20T19:45:59.652+05:30  WARN 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.llm.LLMService       : 🛡️ Fallback used: 1 questions for 'Major Documentation'
+2025-11-20T19:45:59.652+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='Major Documentation' | difficulty='medium' | totalQs=1 | latency=3451ms
+2025-11-20T19:45:59.711+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='Major Documentation' | difficulty='medium' | Qs=1 | 3614 ms
+2025-11-20T19:48:45.898+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/1
+2025-11-20T19:48:45.910+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-9] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'Suser1'
+2025-11-20T19:48:45.954+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 1
+2025-11-20T19:48:45.978+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 1
+2025-11-20T19:48:46.061+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 1: 2 topics, 2 weak topics
+2025-11-20T19:48:46.450+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.ResourceService      : 📚 3 resources fetched for userId=1
+2025-11-20T19:48:52.873+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=3 | topic='Major Documentation' | file='A10 - Major-phase-01.pdf' | chars=72146
+2025-11-20T19:48:52.873+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.QuizController    : 📘 Loaded 72146 chars from saved resource 'A10 - Major-phase-01.pdf'
+2025-11-20T19:48:52.873+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'medium'
+2025-11-20T19:48:52.873+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~72146 chars each) | total=72146 | targetQs=10
+2025-11-20T19:48:52.873+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='Major Documentation' | difficulty='medium' | chars=72146 | targetQs=10
+2025-11-20T19:49:15.095+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.llm.LLMService       : ✅ Chunk 1/1 → 10 questions (10 total so far)
+2025-11-20T19:49:15.095+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='Major Documentation' | difficulty='medium' | totalQs=10 | latency=22222ms
+2025-11-20T19:49:15.109+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='Major Documentation' | difficulty='medium' | Qs=10 | 22248 ms
+2025-11-20T19:54:39.439+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-9] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'Suser1'
+2025-11-20T19:54:39.451+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-8] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 1
+2025-11-20T19:54:39.453+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-10] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/1
+2025-11-20T19:54:39.461+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 1
+2025-11-20T19:54:39.507+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 1: 2 topics, 2 weak topics
+2025-11-20T19:54:39.530+05:30  INFO 21048 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.ResourceService      : 📚 3 resources fetched for userId=1
+2025-11-20T19:56:07.314+05:30  INFO 21048 --- [backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-20T19:56:07.510+05:30  INFO 21048 --- [backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-20T19:56:07.524+05:30  INFO 21048 --- [backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T19:56:07.528+05:30  INFO 21048 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-20T19:56:07.536+05:30  INFO 21048 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-20T19:58:00.968+05:30  INFO 21136 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 21136 (C:\shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\shared\Projects\IntelliQuiz\backend)
+2025-11-20T19:58:00.970+05:30 DEBUG 21136 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
+2025-11-20T19:58:00.970+05:30  INFO 21136 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-11-20T19:58:02.677+05:30  INFO 21136 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-20T19:58:03.056+05:30  INFO 21136 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 364 ms. Found 7 JPA repository interfaces.
+2025-11-20T19:58:05.833+05:30  INFO 21136 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-20T19:58:05.868+05:30  INFO 21136 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-20T19:58:05.868+05:30  INFO 21136 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-20T19:58:06.017+05:30  INFO 21136 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-20T19:58:06.017+05:30  INFO 21136 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4985 ms
+2025-11-20T19:58:06.984+05:30  INFO 21136 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-20T19:58:07.414+05:30  INFO 21136 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-20T19:58:07.508+05:30  INFO 21136 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-20T19:58:08.377+05:30  INFO 21136 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-20T19:58:08.520+05:30  INFO 21136 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-20T19:58:09.067+05:30  INFO 21136 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-20T19:58:09.117+05:30  WARN 21136 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-20T19:58:09.147+05:30  INFO 21136 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.10
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-20T19:58:10.348+05:30  INFO 21136 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-20T19:58:10.940+05:30  INFO 21136 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T19:58:11.260+05:30  INFO 21136 --- [backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-20T19:58:11.838+05:30 DEBUG 21136 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
+2025-11-20T19:58:12.300+05:30  INFO 21136 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-20T19:58:12.508+05:30  WARN 21136 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-20T19:58:13.180+05:30  INFO 21136 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-20T19:58:13.198+05:30  INFO 21136 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 12.862 seconds (process running for 13.365)
+2025-11-20T19:58:50.477+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-20T19:58:50.477+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-20T19:58:50.477+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+2025-11-20T19:58:50.996+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.controller.AuthController    : 📝 Registration attempt for user: NewUser
+2025-11-20T19:58:51.451+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.controller.AuthController    : ✅ User 'NewUser' registered successfully with roles [Role(id=3, name=ROLE_STUDENT)]
+2025-11-20T19:59:03.459+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: Newuser
+2025-11-20T19:59:03.833+05:30  WARN 21136 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.AuthController    : ❌ Invalid credentials for Newuser
+2025-11-20T19:59:29.061+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-6] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: NewUser
+2025-11-20T19:59:29.265+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-6] c.i.backend.controller.AuthController    : ✅ Authentication successful for NewUser
+2025-11-20T19:59:29.266+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-6] c.i.backend.controller.AuthController    : 👤 Roles for NewUser: [ROLE_STUDENT]
+2025-11-20T19:59:29.345+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-6] c.i.backend.controller.AuthController    : 🎫 Access token generated for NewUser
+2025-11-20T19:59:29.396+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.RefreshTokenService  : 💾 Refresh token created for user 'NewUser' [expires: 2025-11-27T14:29:29.376561400Z]
+2025-11-20T19:59:29.400+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-6] c.i.backend.controller.AuthController    : ♻️ Refresh token created for NewUser
+2025-11-20T19:59:29.759+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-5] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/4
+2025-11-20T19:59:29.765+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-1] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'NewUser'
+2025-11-20T19:59:29.850+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 4
+2025-11-20T19:59:29.846+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.ResourceService      : 📚 0 resources fetched for userId=4
+2025-11-20T19:59:29.925+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.AnalyticsService     : ℹ️ No topic data found for user 4
+2025-11-20T19:59:29.930+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.AnalyticsService     : ℹ️ No topic data found for user 4
+2025-11-20T19:59:29.931+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 4: 0 topics, 0 weak topics
+2025-11-20T20:00:01.199+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.ResourceController      : 📤 Upload initiated by NewUser for topic Machine Learning
+2025-11-20T20:00:06.319+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.PdfService           : ✅ Extracted 704106 characters from 'ml.pdf'
+2025-11-20T20:00:06.325+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.ResourceController      : 📄 Extracted 704106 characters from PDF 'ml.pdf'
+2025-11-20T20:00:06.359+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.ResourceService      : 💾 File physically stored at 'C:\shared\Projects\IntelliQuiz\backend\uploads\ml.pdf'
+2025-11-20T20:00:06.421+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.ResourceService      : ✅ Saved resource 'ml.pdf' | topic='Machine Learning' | chars=704106 | user='NewUser'
+2025-11-20T20:00:06.421+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.ResourceController      : ✅ Resource saved: ml.pdf by NewUser
+2025-11-20T20:00:06.462+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-2] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'NewUser'
+2025-11-20T20:00:06.538+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.ResourceService      : 📚 1 resources fetched for userId=4
+2025-11-20T20:00:19.482+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=4 | topic='Machine Learning' | file='ml.pdf' | chars=704106
+2025-11-20T20:00:19.483+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.controller.QuizController    : 📘 Loaded 704106 chars from saved resource 'ml.pdf'
+2025-11-20T20:00:19.491+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'easy'
+2025-11-20T20:00:19.491+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~704106 chars each) | total=704106 | targetQs=15
+2025-11-20T20:00:19.491+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='Machine Learning' | difficulty='easy' | chars=704106 | targetQs=15
+2025-11-20T20:00:55.130+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.service.llm.LLMService       : ✅ Chunk 1/1 → 15 questions (15 total so far)
+2025-11-20T20:00:55.130+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='Machine Learning' | difficulty='easy' | totalQs=15 | latency=35639ms
+2025-11-20T20:00:55.147+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-4] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='Machine Learning' | difficulty='easy' | Qs=15 | 35705 ms
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q1 Correct → selected='B. To extract knowledge from data by generalizing from known examples.' | answer='B. To extract knowledge from data by generalizing from known examples.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q2 Correct → selected='B. Known pairs of inputs and desired outputs.' | answer='B. Known pairs of inputs and desired outputs.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q3 Correct → selected='C. Samples' | answer='C. Samples'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q4 Correct → selected='B. To assess how well the model generalizes to new, unseen data.' | answer='B. To assess how well the model generalizes to new, unseen data.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q5 Correct → selected='C. Fits the training set too closely, performing well on it but poorly on new data.' | answer='C. Fits the training set too closely, performing well on it but poorly on new data.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ❌ Q6 Wrong → selected='A. Classification' | answer='C. Regression'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q7 Correct → selected='C. k-Nearest Neighbors' | answer='C. k-Nearest Neighbors'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ❌ Q8 Wrong → selected='B. Setting some coefficients to exactly zero, performing feature selection.' | answer='D. Restricting the magnitude of coefficients (L2 regularization).'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ❌ Q9 Wrong → selected='C. They always use distance-based metrics, which are scale-independent.' | answer='B. Each feature is processed separately, and splits don't depend on scaling.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q10 Correct → selected='B. They tend to overfit the training data and provide poor generalization.' | answer='B. They tend to overfit the training data and provide poor generalization.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ❌ Q11 Wrong → selected='D. Identifying and removing all proper nouns from the text.' | answer='B. Counting how often each word appears, discarding most original text structure.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q12 Correct → selected='C. To create new binary features, one for each category, allowing models to process them.' | answer='C. To create new binary features, one for each category, allowing models to process them.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ❌ Q13 Wrong → selected='B. It allows for manual intervention at each step of data transformation and model fitting.' | answer='C. It prevents information leakage during cross-validation by encapsulating preprocessing within the loop.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ❌ Q14 Wrong → selected='B. When the model is overfitting the training data.' | answer='C. When the classes in the dataset are heavily imbalanced.'
+2025-11-20T20:03:15.826+05:30 DEBUG 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Q15 Correct → selected='C. The width of the Gaussian kernel, determining the scale of 'closeness' between points.' | answer='C. The width of the Gaussian kernel, determining the scale of 'closeness' between points.'
+2025-11-20T20:03:15.865+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.AnalyticsService     : 🎮 Updated gamification for user 4: +25 points → total 25 | Badges: 
+2025-11-20T20:03:15.897+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ Secure evaluation completed | topic='Machine Learning' | score=60 | correct=9 | total=15 | next='easy'
+2025-11-20T20:03:18.449+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'NewUser'
+2025-11-20T20:03:18.449+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/4
+2025-11-20T20:03:18.455+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 4
+2025-11-20T20:03:18.466+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.QuizController    : 📜 Returned 1 quiz attempts for user 4
+2025-11-20T20:03:18.486+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.ResourceService      : 📚 1 resources fetched for userId=4
+2025-11-20T20:03:18.486+05:30  INFO 21136 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 4: 1 topics, 1 weak topics
+2025-11-20T20:04:59.590+05:30  INFO 21136 --- [backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-20T20:04:59.886+05:30  INFO 21136 --- [backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-20T20:04:59.902+05:30  INFO 21136 --- [backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T20:04:59.902+05:30  INFO 21136 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-20T20:04:59.930+05:30  INFO 21136 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-20T20:05:52.763+05:30  INFO 22624 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 22624 (C:\shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\shared\Projects\IntelliQuiz\backend)
+2025-11-20T20:05:52.766+05:30 DEBUG 22624 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
+2025-11-20T20:05:52.767+05:30  INFO 22624 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-11-20T20:05:55.377+05:30  INFO 22624 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-20T20:05:55.668+05:30  INFO 22624 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 258 ms. Found 7 JPA repository interfaces.
+2025-11-20T20:05:59.333+05:30  INFO 22624 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-20T20:05:59.395+05:30  INFO 22624 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-20T20:05:59.397+05:30  INFO 22624 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-20T20:05:59.655+05:30  INFO 22624 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-20T20:05:59.655+05:30  INFO 22624 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 6758 ms
+2025-11-20T20:06:00.935+05:30  INFO 22624 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-20T20:06:01.109+05:30  INFO 22624 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-20T20:06:01.256+05:30  INFO 22624 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-20T20:06:02.957+05:30  INFO 22624 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-20T20:06:03.155+05:30  INFO 22624 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-20T20:06:04.591+05:30  INFO 22624 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-20T20:06:04.929+05:30  WARN 22624 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-20T20:06:05.384+05:30  INFO 22624 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.10
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-20T20:06:08.044+05:30  INFO 22624 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-20T20:06:09.517+05:30  INFO 22624 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T20:06:10.003+05:30  INFO 22624 --- [backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-20T20:06:11.013+05:30 DEBUG 22624 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
+2025-11-20T20:06:11.584+05:30  INFO 22624 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-20T20:06:12.015+05:30  WARN 22624 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-20T20:06:13.073+05:30  INFO 22624 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-20T20:06:13.083+05:30  INFO 22624 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 21.373 seconds (process running for 22.016)
+2025-11-20T20:06:36.657+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-20T20:06:36.658+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-20T20:06:36.665+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 7 ms
+2025-11-20T20:06:37.257+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : 📝 Registration attempt for user: testinguser
+2025-11-20T20:06:38.548+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.AuthController    : ✅ User 'testinguser' registered successfully with roles [Role(id=3, name=ROLE_STUDENT)]
+2025-11-20T20:06:48.387+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : 🔐 Login attempt for user: testinguser
+2025-11-20T20:06:48.787+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : ✅ Authentication successful for testinguser
+2025-11-20T20:06:48.787+05:30 DEBUG 22624 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : 👤 Roles for testinguser: [ROLE_STUDENT]
+2025-11-20T20:06:48.846+05:30 DEBUG 22624 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : 🎫 Access token generated for testinguser
+2025-11-20T20:06:48.905+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.RefreshTokenService  : 💾 Refresh token created for user 'testinguser' [expires: 2025-11-27T14:36:48.901382800Z]
+2025-11-20T20:06:48.922+05:30 DEBUG 22624 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.AuthController    : ♻️ Refresh token created for testinguser
+2025-11-20T20:06:49.276+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/5
+2025-11-20T20:06:49.283+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:06:49.338+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.ResourceService      : 📚 0 resources fetched for userId=5
+2025-11-20T20:06:49.346+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 5
+2025-11-20T20:06:49.379+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : ℹ️ No topic data found for user 5
+2025-11-20T20:06:49.385+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : ℹ️ No topic data found for user 5
+2025-11-20T20:06:49.385+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 5: 0 topics, 0 weak topics
+2025-11-20T20:07:01.983+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] c.i.b.controller.ResourceController      : 📤 Upload initiated by testinguser for topic Java-01
+2025-11-20T20:07:02.895+05:30  WARN 22624 --- [backend] [http-nio-8080-exec-1] o.a.pdfbox.pdmodel.font.PDSimpleFont     : No Unicode mapping for circlecopyrt (13) in font RONJQH+CMSY10
+2025-11-20T20:07:05.643+05:30  WARN 22624 --- [backend] [http-nio-8080-exec-1] o.a.pdfbox.pdmodel.font.PDSimpleFont     : No Unicode mapping for angbracketleft (104) in font RONJQH+CMSY10
+2025-11-20T20:07:05.651+05:30  WARN 22624 --- [backend] [http-nio-8080-exec-1] o.a.pdfbox.pdmodel.font.PDSimpleFont     : No Unicode mapping for angbracketright (105) in font RONJQH+CMSY10
+2025-11-20T20:07:10.728+05:30  WARN 22624 --- [backend] [http-nio-8080-exec-1] o.a.pdfbox.pdmodel.font.PDSimpleFont     : No Unicode mapping for a33 (33) in font null
+2025-11-20T20:07:12.053+05:30  WARN 22624 --- [backend] [http-nio-8080-exec-1] o.a.pdfbox.pdmodel.font.PDSimpleFont     : No Unicode mapping for a162 (162) in font null
+2025-11-20T20:07:14.531+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.PdfService           : ✅ Extracted 1955333 characters from 'java.pdf'
+2025-11-20T20:07:14.535+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] c.i.b.controller.ResourceController      : 📄 Extracted 1955333 characters from PDF 'java.pdf'
+2025-11-20T20:07:14.627+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.ResourceService      : 💾 File physically stored at 'C:\shared\Projects\IntelliQuiz\backend\uploads\java.pdf'
+2025-11-20T20:07:14.903+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.ResourceService      : ✅ Saved resource 'java.pdf' | topic='Java-01' | chars=1955333 | user='testinguser'
+2025-11-20T20:07:14.903+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] c.i.b.controller.ResourceController      : ✅ Resource saved: java.pdf by testinguser
+2025-11-20T20:07:14.967+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-4] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:07:15.182+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-4] c.i.backend.service.ResourceService      : 📚 1 resources fetched for userId=5
+2025-11-20T20:07:29.385+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=5 | topic='Java-01' | file='java.pdf' | chars=1955333
+2025-11-20T20:07:29.385+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : 📘 Loaded 1955333 chars from saved resource 'java.pdf'
+2025-11-20T20:07:29.395+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'hard'
+2025-11-20T20:07:29.395+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~1955333 chars each) | total=1955333 | targetQs=5
+2025-11-20T20:07:29.401+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='Java-01' | difficulty='hard' | chars=1955333 | targetQs=5
+2025-11-20T20:08:02.439+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.llm.LLMService       : ✅ Chunk 1/1 → 5 questions (5 total so far)
+2025-11-20T20:08:02.441+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='Java-01' | difficulty='hard' | totalQs=5 | latency=33046ms
+2025-11-20T20:08:02.468+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='Java-01' | difficulty='hard' | Qs=5 | 33153 ms
+2025-11-20T20:09:25.627+05:30 DEBUG 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : ✅ Q1 Correct → selected='Java programs are compiled into a universal machine language (Java bytecode), which is then interpreted by a platform-specific JVM.' | answer='Option B'
+2025-11-20T20:09:25.627+05:30 DEBUG 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : ✅ Q2 Correct → selected='By implementing specific event-handling methods that the system invokes dynamically in response to relevant, often user-initiated, occurrences.' | answer='Option C'
+2025-11-20T20:09:25.627+05:30 DEBUG 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : ✅ Q3 Correct → selected='It enables the compiler to identify and report many type-related errors before program execution, contributing to predictable behavior.' | answer='Option C'
+2025-11-20T20:09:25.627+05:30 DEBUG 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : ✅ Q4 Correct → selected='Defining `boolean isValid(int value)` and `String isValid(int value)` in the same class.' | answer='Option C'
+2025-11-20T20:09:25.627+05:30 DEBUG 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : ✅ Q5 Correct → selected='It establishes a required interface for the action that all concrete subclasses must define, enabling generic manipulation of objects through their superclass type.' | answer='Option B'
+2025-11-20T20:09:25.655+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.AnalyticsService     : 🎮 Updated gamification for user 5: +50 points → total 50 | Badges: 
+2025-11-20T20:09:25.674+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : ✅ Secure evaluation completed | topic='Java-01' | score=100 | correct=5 | total=5 | next='hard'
+2025-11-20T20:09:30.481+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/5
+2025-11-20T20:09:30.483+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:09:30.486+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 5
+2025-11-20T20:09:30.501+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.QuizController    : 📜 Returned 1 quiz attempts for user 5
+2025-11-20T20:09:30.515+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 5: 1 topics, 1 weak topics
+2025-11-20T20:09:30.527+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.ResourceService      : 📚 1 resources fetched for userId=5
+2025-11-20T20:10:25.081+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : 📤 Upload initiated by testinguser for topic My Documentation
+2025-11-20T20:10:26.229+05:30  WARN 22624 --- [backend] [http-nio-8080-exec-8] org.apache.fontbox.ttf.CmapSubtable      : Format 14 cmap table is not supported and will be ignored
+2025-11-20T20:10:26.375+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.PdfService           : ✅ Extracted 72146 characters from 'A10 - Major-phase-01.pdf'
+2025-11-20T20:10:26.385+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : 📄 Extracted 72146 characters from PDF 'A10 - Major-phase-01.pdf'
+2025-11-20T20:10:26.725+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.ResourceService      : 💾 File physically stored at 'C:\shared\Projects\IntelliQuiz\backend\uploads\A10 - Major-phase-01.pdf'
+2025-11-20T20:10:26.763+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.ResourceService      : ✅ Saved resource 'A10 - Major-phase-01.pdf' | topic='My Documentation' | chars=72146 | user='testinguser'
+2025-11-20T20:10:26.763+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : ✅ Resource saved: A10 - Major-phase-01.pdf by testinguser
+2025-11-20T20:10:26.819+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-10] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:10:26.881+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:10:35.698+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=6 | topic='My Documentation' | file='A10 - Major-phase-01.pdf' | chars=72146
+2025-11-20T20:10:35.698+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.QuizController    : 📘 Loaded 72146 chars from saved resource 'A10 - Major-phase-01.pdf'
+2025-11-20T20:10:35.705+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'medium'
+2025-11-20T20:10:35.705+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~72146 chars each) | total=72146 | targetQs=3
+2025-11-20T20:10:35.706+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='My Documentation' | difficulty='medium' | chars=72146 | targetQs=3
+2025-11-20T20:10:40.655+05:30 ERROR 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : ❌ LLM failed on chunk 1/1: 503 Service Unavailable on POST request for "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent": "{<EOL>  "error": {<EOL>    "code": 503,<EOL>    "message": "The model is overloaded. Please try again later.",<EOL>    "status": "UNAVAILABLE"<EOL>  }<EOL>}<EOL>"
+2025-11-20T20:10:40.655+05:30  WARN 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : 🛡️ Fallback used: 1 questions for 'My Documentation'
+2025-11-20T20:10:40.655+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='My Documentation' | difficulty='medium' | totalQs=1 | latency=4950ms
+2025-11-20T20:10:40.678+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='My Documentation' | difficulty='medium' | Qs=1 | 4997 ms
+2025-11-20T20:10:50.163+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/5
+2025-11-20T20:10:50.163+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:10:50.168+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 5
+2025-11-20T20:10:50.168+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : 📜 Returned 1 quiz attempts for user 5
+2025-11-20T20:10:50.182+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 5: 1 topics, 1 weak topics
+2025-11-20T20:10:50.207+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:13:23.004+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=6 | topic='My Documentation' | file='A10 - Major-phase-01.pdf' | chars=72146
+2025-11-20T20:13:23.004+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : 📘 Loaded 72146 chars from saved resource 'A10 - Major-phase-01.pdf'
+2025-11-20T20:13:23.014+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'medium'
+2025-11-20T20:13:23.014+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.llm.LLMService       : 🧩 Context split → 1 chunks (~72146 chars each) | total=72146 | targetQs=3
+2025-11-20T20:13:23.015+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.llm.LLMService       : 🧠 LLM started | topic='My Documentation' | difficulty='medium' | chars=72146 | targetQs=3
+2025-11-20T20:13:38.398+05:30 ERROR 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.llm.LLMService       : ❌ LLM failed on chunk 1/1: 503 Service Unavailable on POST request for "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent": "{<EOL>  "error": {<EOL>    "code": 503,<EOL>    "message": "The model is overloaded. Please try again later.",<EOL>    "status": "UNAVAILABLE"<EOL>  }<EOL>}<EOL>"
+2025-11-20T20:13:38.398+05:30  WARN 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.llm.LLMService       : 🛡️ Fallback used: 1 questions for 'My Documentation'
+2025-11-20T20:13:38.398+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.llm.LLMService       : 🎯 LLM completed | topic='My Documentation' | difficulty='medium' | totalQs=1 | latency=15384ms
+2025-11-20T20:13:38.420+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='My Documentation' | difficulty='medium' | Qs=1 | 15427 ms
+2025-11-20T20:14:04.818+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:14:04.818+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/5
+2025-11-20T20:14:04.822+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 5
+2025-11-20T20:14:04.824+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-1] c.i.backend.controller.QuizController    : 📜 Returned 1 quiz attempts for user 5
+2025-11-20T20:14:04.835+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 5: 1 topics, 1 weak topics
+2025-11-20T20:14:04.859+05:30  INFO 22624 --- [backend] [http-nio-8080-exec-8] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:30:34.185+05:30  INFO 22624 --- [backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-20T20:30:34.545+05:30  INFO 22624 --- [backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-20T20:30:34.551+05:30  INFO 22624 --- [backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T20:30:34.552+05:30  INFO 22624 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-20T20:30:34.574+05:30  INFO 22624 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-11-20T20:30:46.189+05:30  INFO 11536 --- [backend] [main] c.i.backend.BackendApplication           : Starting BackendApplication using Java 17.0.12 with PID 11536 (C:\shared\Projects\IntelliQuiz\backend\target\classes started by gnane in C:\shared\Projects\IntelliQuiz\backend)
+2025-11-20T20:30:46.193+05:30 DEBUG 11536 --- [backend] [main] c.i.backend.BackendApplication           : Running with Spring Boot v3.5.5, Spring v6.2.10
+2025-11-20T20:30:46.195+05:30  INFO 11536 --- [backend] [main] c.i.backend.BackendApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-11-20T20:30:47.823+05:30  INFO 11536 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-20T20:30:47.986+05:30  INFO 11536 --- [backend] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 142 ms. Found 7 JPA repository interfaces.
+2025-11-20T20:30:49.173+05:30  INFO 11536 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-20T20:30:49.193+05:30  INFO 11536 --- [backend] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-20T20:30:49.197+05:30  INFO 11536 --- [backend] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.44]
+2025-11-20T20:30:49.284+05:30  INFO 11536 --- [backend] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-20T20:30:49.284+05:30  INFO 11536 --- [backend] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2977 ms
+2025-11-20T20:30:49.554+05:30  INFO 11536 --- [backend] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-20T20:30:49.668+05:30  INFO 11536 --- [backend] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.26.Final
+2025-11-20T20:30:49.748+05:30  INFO 11536 --- [backend] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-20T20:30:50.266+05:30  INFO 11536 --- [backend] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-20T20:30:50.316+05:30  INFO 11536 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-20T20:30:50.695+05:30  INFO 11536 --- [backend] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-20T20:30:50.742+05:30  WARN 11536 --- [backend] [main] org.hibernate.orm.deprecation            : HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-20T20:30:50.783+05:30  INFO 11536 --- [backend] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 16.10
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-11-20T20:30:52.666+05:30  INFO 11536 --- [backend] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-11-20T20:30:53.691+05:30  INFO 11536 --- [backend] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T20:30:54.098+05:30  INFO 11536 --- [backend] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-11-20T20:30:54.996+05:30 DEBUG 11536 --- [backend] [main] c.i.b.security.jwt.AuthTokenFilter       : Filter 'authenticationJwtTokenFilter' configured for use
+2025-11-20T20:30:55.738+05:30  INFO 11536 --- [backend] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl
+2025-11-20T20:30:56.122+05:30  WARN 11536 --- [backend] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-20T20:30:57.033+05:30  INFO 11536 --- [backend] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-11-20T20:30:57.053+05:30  INFO 11536 --- [backend] [main] c.i.backend.BackendApplication           : Started BackendApplication in 12.056 seconds (process running for 12.738)
+2025-11-20T20:31:02.466+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-20T20:31:02.468+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-20T20:31:02.472+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2025-11-20T20:31:02.948+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-2] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:31:02.967+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-7] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/5
+2025-11-20T20:31:03.072+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-6] c.i.backend.controller.QuizController    : 📜 Returned 1 quiz attempts for user 5
+2025-11-20T20:31:03.159+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 5
+2025-11-20T20:31:03.267+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 5: 1 topics, 1 weak topics
+2025-11-20T20:31:03.493+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:31:13.016+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.ResourceService      : 📘 Resource fetched | id=6 | topic='My Documentation' | file='A10 - Major-phase-01.pdf' | chars=72146
+2025-11-20T20:31:13.016+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : 📘 Loaded 72146 chars from saved resource 'A10 - Major-phase-01.pdf'
+2025-11-20T20:31:13.028+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : 🆕 New topic → starting at user-selected difficulty 'medium'
+2025-11-20T20:31:13.031+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.llm.LLMService       : 🧩 Using fixed chunking → 2 chunks of 50k chars
+2025-11-20T20:31:13.033+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.llm.LLMService       : 🤖 Trying Gemini model: models/gemini-2.5-flash-lite
+2025-11-20T20:31:15.311+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.llm.LLMService       : ✅ Gemini model 'models/gemini-2.5-flash-lite' succeeded
+2025-11-20T20:31:15.316+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.llm.LLMService       : ✅ Chunk 1/2 → 1 questions (1 total)
+2025-11-20T20:31:15.316+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.llm.LLMService       : 🤖 Trying Gemini model: models/gemini-2.5-flash-lite
+2025-11-20T20:31:18.241+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.llm.LLMService       : ✅ Gemini model 'models/gemini-2.5-flash-lite' succeeded
+2025-11-20T20:31:18.243+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.llm.LLMService       : ✅ Chunk 2/2 → 2 questions (3 total)
+2025-11-20T20:31:18.243+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.service.llm.LLMService       : 🎯 Completed topic='My Documentation' Qs=3 latency=5212ms
+2025-11-20T20:31:18.351+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : ✅ AI Quiz generated | topic='My Documentation' | difficulty='medium' | Qs=3 | 5356 ms
+2025-11-20T20:32:43.162+05:30 DEBUG 11536 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : ✅ Q1 Correct → selected='To dynamically adjust the complexity of questions presented to a student based on their real-time performance to optimize the learning experience.' | answer='To dynamically adjust the complexity of questions presented to a student based on their real-time performance to optimize the learning experience.'
+2025-11-20T20:32:43.162+05:30 DEBUG 11536 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : ❌ Q2 Wrong → selected='Performing extensive manual testing of all LLM interactions.' | answer='Mocking LLM endpoints and utilizing cached responses.'
+2025-11-20T20:32:43.162+05:30 DEBUG 11536 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : ✅ Q3 Correct → selected='The user will be redirected to the student dashboard (`/student/dashboard`) due to insufficient roles.' | answer='The user will be redirected to the student dashboard (`/student/dashboard`) due to insufficient roles.'
+2025-11-20T20:32:43.203+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.AnalyticsService     : 🎮 Updated gamification for user 5: +25 points → total 75 | Badges: 
+2025-11-20T20:32:43.227+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : ✅ Secure evaluation completed | topic='My Documentation' | score=67 | correct=2 | total=3 | next='medium'
+2025-11-20T20:32:52.559+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/5
+2025-11-20T20:32:52.563+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-9] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:32:52.563+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 5
+2025-11-20T20:32:52.567+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 5
+2025-11-20T20:32:52.579+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 5: 2 topics, 2 weak topics
+2025-11-20T20:32:52.615+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:33:04.615+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-1] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:33:04.673+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:33:04.693+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-5] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:33:04.737+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-5] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:33:04.783+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-7] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 5
+2025-11-20T20:33:04.883+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 5
+2025-11-20T20:33:09.181+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-3] c.i.backend.controller.QuizController    : 📋 Listed 13 generated quizzes.
+2025-11-20T20:33:09.224+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-8] c.i.backend.controller.QuizController    : 📘 Returned quizId=11 | topic='My Documentation' | difficulty='medium' | 1 questions
+2025-11-20T20:33:15.188+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:33:15.235+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:33:15.257+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-7] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:33:15.305+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-7] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:33:15.347+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 5
+2025-11-20T20:33:15.430+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-10] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 5
+2025-11-20T20:33:17.371+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-9] c.i.backend.controller.QuizController    : 📋 Listed 13 generated quizzes.
+2025-11-20T20:33:17.408+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-4] c.i.backend.controller.QuizController    : 📘 Returned quizId=11 | topic='My Documentation' | difficulty='medium' | 1 questions
+2025-11-20T20:33:19.379+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-1] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:33:19.425+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-1] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:33:19.446+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:33:19.491+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:33:19.525+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 5
+2025-11-20T20:33:19.609+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-2] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 5
+2025-11-20T20:33:21.081+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-3] c.i.b.controller.AnalyticsController     : 🏆 GET /analytics/leaderboard?limit=10
+2025-11-20T20:33:21.108+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-3] c.i.backend.service.AnalyticsService     : 📊 Leaderboard built → 3 students (filtered from total=5)
+2025-11-20T20:33:21.141+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-9] c.i.b.controller.AnalyticsController     : 🏆 GET /analytics/leaderboard?limit=10
+2025-11-20T20:33:21.163+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-9] c.i.backend.service.AnalyticsService     : 📊 Leaderboard built → 3 students (filtered from total=5)
+2025-11-20T20:33:25.596+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-2] c.i.b.controller.ResourceController      : 📥 GET /resources/list for user 'testinguser'
+2025-11-20T20:33:25.597+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-6] c.i.b.controller.AnalyticsController     : 📊 GET /analytics/student/5
+2025-11-20T20:33:25.601+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : 📊 Fetching analytics for user 5
+2025-11-20T20:33:25.603+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-5] c.i.backend.controller.QuizController    : 📜 Returned 2 quiz attempts for user 5
+2025-11-20T20:33:25.615+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-6] c.i.backend.service.AnalyticsService     : ✅ Analytics response built for user 5: 2 topics, 2 weak topics
+2025-11-20T20:33:25.633+05:30  INFO 11536 --- [backend] [http-nio-8080-exec-2] c.i.backend.service.ResourceService      : 📚 2 resources fetched for userId=5
+2025-11-20T20:34:45.907+05:30  INFO 11536 --- [backend] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-11-20T20:34:46.203+05:30  INFO 11536 --- [backend] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-11-20T20:34:46.209+05:30  INFO 11536 --- [backend] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-11-20T20:34:46.213+05:30  INFO 11536 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-11-20T20:34:46.233+05:30  INFO 11536 --- [backend] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.

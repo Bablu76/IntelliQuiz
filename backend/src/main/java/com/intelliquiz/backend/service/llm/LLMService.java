@@ -13,11 +13,6 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Instant;
 import java.util.*;
 
-/**
- * 🧠 LLMService — Full-Context Adaptive Quiz Generator
- * Dynamically adjusts chunk size based on context length, model capacity, and target question count.
- * Supports Gemini 2.5 (Flash / Pro / Flash-Lite) and OpenAI GPT-4o-mini.
- */
 @Service
 public class LLMService {
 
@@ -35,8 +30,17 @@ public class LLMService {
     @Value("${gemini.model.primary:models/gemini-2.5-flash}")
     private String geminiPrimaryModel;
 
-    private static final int TIMEOUT = 60000;
+    // 🔥 Ordered fallback: safest first → most powerful last
+    private final List<String> geminiModels = List.of(
+            "models/gemini-2.5-flash-lite",
+            "models/gemini-2.0-flash",
+            "models/gemini-2.5-flash",
+            "models/gemini-2.5-flash-preview",
+            "models/gemini-3.0-pro-preview",
+            "models/gemini-2.5-pro"
+    );
 
+    private static final int TIMEOUT = 60000;
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -48,197 +52,223 @@ public class LLMService {
     }
 
     // ------------------------------------------------------------------------
-    // 🧠 Generate Questions (Adaptive + Early Stop)
+    // 🧠 Generate Questions (Main Pipeline)
     // ------------------------------------------------------------------------
     public List<Map<String, Object>> generateQuestions(String topic, String difficulty, String fullContext, int totalCount) {
+
         Instant start = Instant.now();
+
         if (fullContext == null || fullContext.isBlank()) {
-            log.warn("⚠️ Empty context for '{}', returning fallback.", topic);
+            log.warn("⚠️ Empty context for topic '{}'", topic);
             return fallback(topic, difficulty, totalCount);
         }
 
         List<Map<String, Object>> allQuestions = new ArrayList<>();
 
-        int totalChars = fullContext.length();
-        int modelLimit = decideModelCharLimit();
-        int idealChunkCount = Math.max(1, Math.min(totalCount, (int) Math.ceil((double) totalChars / modelLimit)));
-
-        List<String> chunks = createAdaptiveChunks(fullContext, idealChunkCount);
-        log.info("🧩 Context split → {} chunks (~{} chars each) | total={} | targetQs={}",
-                chunks.size(), totalChars / chunks.size(), totalChars, totalCount);
-
-        log.info("🧠 LLM started | topic='{}' | difficulty='{}' | chars={} | targetQs={}",
-                topic, difficulty, totalChars, totalCount);
+        List<String> chunks = createFixedChunks(fullContext);
+        log.info("🧩 Using fixed chunking → {} chunks of 50k chars", chunks.size());
 
         for (int i = 0; i < chunks.size() && allQuestions.size() < totalCount; i++) {
-            String chunk = chunks.get(i);
+
             int remaining = totalCount - allQuestions.size();
             int perChunk = Math.max(1, remaining / (chunks.size() - i));
 
-            String prompt = buildPrompt(topic, difficulty, chunk, perChunk);
+            String prompt = buildPrompt(topic, difficulty, chunks.get(i), perChunk);
 
             try {
-                String response = switch (decideProvider()) {
-                    case "openai" -> callOpenAI(prompt);
-                    case "gemini" -> callGemini(prompt);
-                    default -> throw new IllegalStateException("No valid LLM provider");
-                };
-
-                List<Map<String, Object>> parsed = safeParse(response);
+                String raw = callWithFallback(prompt);
+                List<Map<String, Object>> parsed = safeParse(raw);
                 allQuestions.addAll(parsed);
 
-                log.info("✅ Chunk {}/{} → {} questions ({} total so far)",
+                log.info("✅ Chunk {}/{} → {} questions ({} total)",
                         i + 1, chunks.size(), parsed.size(), allQuestions.size());
 
-                if (allQuestions.size() >= totalCount) break;
-
             } catch (Exception e) {
-                log.error("❌ LLM failed on chunk {}/{}: {}", i + 1, chunks.size(), e.getMessage());
+                log.error("❌ LLM chunk {} failed: {}", i + 1, e.getMessage());
                 allQuestions.addAll(fallback(topic, difficulty, 1));
             }
         }
 
+        List<Map<String, Object>> finalQs =
+                allQuestions.size() > totalCount ?
+                        allQuestions.subList(0, totalCount) : allQuestions;
+
         long latency = Instant.now().toEpochMilli() - start.toEpochMilli();
-        List<Map<String, Object>> result = allQuestions.size() > totalCount
-                ? allQuestions.subList(0, totalCount)
-                : allQuestions;
+        log.info("🎯 Completed topic='{}' Qs={} latency={}ms",
+                topic, finalQs.size(), latency);
 
-        log.info("🎯 LLM completed | topic='{}' | difficulty='{}' | totalQs={} | latency={}ms",
-                topic, difficulty, result.size(), latency);
-
-        return result.isEmpty() ? fallback(topic, difficulty, totalCount) : result;
+        return finalQs;
     }
 
     // ------------------------------------------------------------------------
-    // ✂️ Dynamic Chunking (Adaptive)
+    // ✂️ FIXED 50,000 CHAR CHUNKS
     // ------------------------------------------------------------------------
-    private List<String> createAdaptiveChunks(String text, int targetChunks) {
-        int total = text.length();
-        if (targetChunks <= 1 || total <= decideModelCharLimit()) return List.of(text);
-
-        int chunkSize = Math.max(total / targetChunks, 10_000);
-        List<String> chunks = new ArrayList<>();
-        for (int i = 0; i < total; i += chunkSize) {
-            chunks.add(text.substring(i, Math.min(i + chunkSize, total)).trim());
+    private List<String> createFixedChunks(String text) {
+        int chunkSize = 50_000;
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < text.length(); i += chunkSize) {
+            list.add(text.substring(i, Math.min(i + chunkSize, text.length())).trim());
         }
-        return chunks;
+        return list;
     }
 
     // ------------------------------------------------------------------------
-    // 💬 Prompt Construction
+    // 💬 Prompt builder
     // ------------------------------------------------------------------------
     private String buildPrompt(String topic, String difficulty, String context, int count) {
         return String.format("""
                 You are an expert quiz generator specialized in "%s".
-                Based only on the following learning material, create %d conceptual multiple-choice questions.
+                Based on the study material below, create %d high-quality conceptual MCQs.
 
-                Guidelines:
-                - Assess understanding of key ideas, reasoning, and real-world applications.
-                - Avoid trivial details, names, or publication years.
-                - Each question must have 4 options with exactly one correct answer.
-                - Ensure questions are clear, meaningful, and relevant to the topic.
-                - Difficulty: %s.
+                Requirements:
+                - One correct answer per question
+                - Avoid trivia and focus on understanding
+                - Provide 4 options in an array
+                - Difficulty: %s
 
-                Study Material (excerpt):
+                Study Material:
                 "%s"
 
-                Return strictly valid JSON:
+                Return ONLY JSON in this format:
                 [
-                  {"question":"...","options":["A","B","C","D"],"answer":"Option A"},
-                  ...
+                  {"question":"..","options":["A","B","C","D"],"answer":"Option A"}
                 ]
                 """, topic, count, difficulty, context);
     }
 
     // ------------------------------------------------------------------------
-    // 📏 Model Context Awareness
+    // 🌐 Provider decision + fallback
     // ------------------------------------------------------------------------
-    private int decideModelCharLimit() {
-        if (geminiPrimaryModel.contains("2.5-flash")) return 3_000_000;     // Gemini 2.5 Flash
-        if (geminiPrimaryModel.contains("2.5-pro")) return 2_800_000;       // Gemini 2.5 Pro
-        if (geminiPrimaryModel.contains("2.5-flash-lite")) return 2_000_000;// Gemini 2.5 Flash-Lite
-        if ("openai".equalsIgnoreCase(provider)) return 1_000_000;          // GPT-4o-mini (~16K tokens)
-        return 800_000;
+    private String callWithFallback(String prompt) throws Exception {
+
+        Exception lastError = null;
+
+        // 1️⃣ Try every Gemini model in order
+        for (String model : geminiModels) {
+
+            if (geminiApiKey == null || geminiApiKey.isBlank()) break;
+
+            try {
+                log.info("🤖 Trying Gemini model: {}", model);
+
+                String response = callGeminiModel(prompt, model);
+                log.info("✅ Gemini model '{}' succeeded", model);
+                return response;
+
+            } catch (Exception e) {
+
+                lastError = e;
+                String msg = e.getMessage();
+
+                if (msg != null && (msg.contains("429") || msg.contains("503"))) {
+                    log.warn("⏳ '{}' rate-limited/overloaded. Trying next model...", model);
+                    continue;
+                }
+
+                log.warn("⚠️ Gemini '{}' failed (non-rate limit). Trying next...", model);
+            }
+        }
+
+        // 2️⃣ Try OpenAI as final fallback
+        if (openAIApiKey != null && !openAIApiKey.isBlank()) {
+            try {
+                log.info("🟦 Switching to OpenAI fallback (gpt-4o-mini)");
+                return callOpenAI(prompt);
+            } catch (Exception e) {
+                lastError = e;
+            }
+        }
+
+        // 3️⃣ All models failed
+        throw new RuntimeException("❌ All models failed", lastError);
     }
 
     // ------------------------------------------------------------------------
-    // ☁️ Provider Calls
+    // 🟣 Call Gemini (specific model)
     // ------------------------------------------------------------------------
-    private String decideProvider() {
-        boolean hasGemini = geminiApiKey != null && !geminiApiKey.isBlank();
-        boolean hasOpenAI = openAIApiKey != null && !openAIApiKey.isBlank();
+    private String callGeminiModel(String prompt, String model) {
 
-        if ("openai".equalsIgnoreCase(provider) && hasOpenAI) return "openai";
-        if ("gemini".equalsIgnoreCase(provider) && hasGemini) return "gemini";
-        if (hasGemini) return "gemini";
-        if (hasOpenAI) return "openai";
-        throw new RuntimeException("No valid LLM provider available.");
-    }
-
-    private String callGemini(String prompt) {
-        String url = "https://generativelanguage.googleapis.com/v1beta/"
-                + geminiPrimaryModel + ":generateContent?key=" + geminiApiKey;
+        String url = "https://generativelanguage.googleapis.com/v1beta/" +
+                model + ":generateContent?key=" + geminiApiKey;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> body = Map.of(
-                "contents", List.of(Map.of("parts", List.of(Map.of("text", prompt))))
+                "contents", List.of(Map.of(
+                        "parts", List.of(Map.of("text", prompt))
+                ))
         );
 
-        ResponseEntity<Map> res = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(body, headers), Map.class);
+        ResponseEntity<Map> res =
+                restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(body, headers), Map.class);
+
         Map<?, ?> candidate = (Map<?, ?>) ((List<?>) res.getBody().get("candidates")).get(0);
         Map<?, ?> content = (Map<?, ?>) candidate.get("content");
         List<?> parts = (List<?>) content.get("parts");
+
         return (String) ((Map<?, ?>) parts.get(0)).get("text");
     }
 
+    // ------------------------------------------------------------------------
+    // 🟦 Call OpenAI fallback
+    // ------------------------------------------------------------------------
     private String callOpenAI(String prompt) {
+
         String url = "https://api.openai.com/v1/chat/completions";
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(openAIApiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> body = Map.of(
                 "model", "gpt-4o-mini",
-                "temperature", 0.3,
+                "temperature", 0.35,
                 "max_tokens", 1500,
                 "messages", List.of(Map.of("role", "user", "content", prompt))
         );
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(url, new HttpEntity<>(body, headers), Map.class);
-        return Optional.ofNullable(response.getBody())
-                .map(b -> ((List<?>) b.get("choices")).get(0))
-                .map(c -> (Map<?, ?>) ((Map<?, ?>) c).get("message"))
-                .map(m -> (String) m.get("content"))
-                .orElseThrow(() -> new RuntimeException("OpenAI response parsing failed"));
+        ResponseEntity<Map> response =
+                restTemplate.postForEntity(url, new HttpEntity<>(body, headers), Map.class);
+
+        Map<?, ?> choice = (Map<?, ?>) ((List<?>) response.getBody().get("choices")).get(0);
+        Map<?, ?> message = (Map<?, ?>) choice.get("message");
+        return (String) message.get("content");
     }
 
     // ------------------------------------------------------------------------
-    // 🧩 Safe Parsing & Fallback
+    // 🧩 JSON Parsing Recovery
     // ------------------------------------------------------------------------
     private List<Map<String, Object>> safeParse(String json) throws Exception {
+
         try {
             return mapper.readValue(json, new TypeReference<>() {});
         } catch (Exception e) {
+
             int s = json.indexOf('[');
             int eIdx = json.lastIndexOf(']');
-            if (s >= 0 && eIdx > s)
+
+            if (s >= 0 && eIdx > s) {
                 return mapper.readValue(json.substring(s, eIdx + 1), new TypeReference<>() {});
+            }
+
             throw e;
         }
     }
 
+    // ------------------------------------------------------------------------
+    // 🛡 Built-in fallback for disasters
+    // ------------------------------------------------------------------------
     private List<Map<String, Object>> fallback(String topic, String diff, int count) {
         List<Map<String, Object>> list = new ArrayList<>();
         for (int i = 1; i <= Math.max(1, count); i++) {
             list.add(Map.of(
-                    "question", String.format("[%s] Backup Question %d about %s?", diff, i, topic),
+                    "question", "[FALLBACK] Backup Question " + i + " about " + topic,
                     "options", List.of("Option A", "Option B", "Option C", "Option D"),
                     "answer", "Option A"
             ));
         }
-        log.warn("🛡️ Fallback used: {} questions for '{}'", list.size(), topic);
+        log.warn("🛡️ Fallback used: {} questions", list.size());
         return list;
     }
 }
