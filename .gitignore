@@ -1,0 +1,53 @@
+# =====================================================================
+# IntelliQuiz — root .gitignore
+# Goal: commit source code only. No compiled output, no build artifacts,
+# no jar/war, no local data/logs, no uploaded files, no secrets.
+# =====================================================================
+
+# ----- Java / Maven build output -----
+target/
+backend/bin/
+*.class
+*.jar
+*.war
+*.ear
+**/.mvn/wrapper/maven-wrapper.jar
+
+# ----- Node / Vite build output -----
+**/node_modules/
+**/dist/
+**/dist-ssr/
+*.local
+
+# ----- Runtime / local data -----
+backend/logs/
+**/*.log
+backend/data/
+*.mv.db
+*.trace.db
+
+# ----- Uploaded files (keep the folder, ignore contents) -----
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# ----- Secrets / local env overrides -----
+# application.properties is tracked, but its API key reads from $GEMINI_API_KEY.
+*.env.local
+.env.*.local
+
+# ----- IDE / editor -----
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.settings/
+.classpath
+.project
+.factorypath
+.apt_generated
+.DS_Store
+*.sw?
+
+# ----- Misc -----
+HELP.md

@@ -30,15 +30,17 @@ public class LLMService {
     @Value("${gemini.model.primary:models/gemini-2.5-flash}")
     private String geminiPrimaryModel;
 
-    // 🔥 Ordered fallback: safest first → most powerful last
+    // 💰 Cost-controlled fallback: cheapest first, and we deliberately do NOT
+    // auto-escalate to expensive "pro" models on a transient rate-limit/overload.
+    // Keeping only low-cost "flash" tiers caps the per-quiz token spend.
     private final List<String> geminiModels = List.of(
             "models/gemini-2.5-flash-lite",
             "models/gemini-2.0-flash",
-            "models/gemini-2.5-flash",
-            "models/gemini-2.5-flash-preview",
-            "models/gemini-3.0-pro-preview",
-            "models/gemini-2.5-pro"
+            "models/gemini-2.5-flash"
     );
+
+    // Hard cap on tokens the model may return per call (bounds output cost).
+    private static final int MAX_OUTPUT_TOKENS = 2048;
 
     private static final int TIMEOUT = 60000;
     private final RestTemplate restTemplate;
@@ -63,35 +65,26 @@ public class LLMService {
             return fallback(topic, difficulty, totalCount);
         }
 
-        List<Map<String, Object>> allQuestions = new ArrayList<>();
+        // 💰 Retrieval: instead of shipping the entire document, pick only the
+        // passages most relevant to the topic and send them in ONE call. This is
+        // the biggest token saver — a 200k-char PDF shrinks to ~MAX_CONTEXT_CHARS.
+        String selectedContext = selectRelevantContext(fullContext, topic);
+        log.info("🔎 Retrieval: full={} chars → selected={} chars for topic '{}'",
+                fullContext.length(), selectedContext.length(), topic);
 
-        List<String> chunks = createFixedChunks(fullContext);
-        log.info("🧩 Using fixed chunking → {} chunks of 100k chars", chunks.size());
-
-        for (int i = 0; i < chunks.size() && allQuestions.size() < totalCount; i++) {
-
-            int remaining = totalCount - allQuestions.size();
-            int perChunk = Math.max(1, remaining / (chunks.size() - i));
-
-            String prompt = buildPrompt(topic, difficulty, chunks.get(i), perChunk);
-
-            try {
-                String raw = callWithFallback(prompt);
-                List<Map<String, Object>> parsed = safeParse(raw);
-                allQuestions.addAll(parsed);
-
-                log.info("✅ Chunk {}/{} → {} questions ({} total)",
-                        i + 1, chunks.size(), parsed.size(), allQuestions.size());
-
-            } catch (Exception e) {
-                log.error("❌ LLM chunk {} failed: {}", i + 1, e.getMessage());
-                allQuestions.addAll(fallback(topic, difficulty, 1));
-            }
+        List<Map<String, Object>> questions;
+        try {
+            String prompt = buildPrompt(topic, difficulty, selectedContext, totalCount);
+            String raw = callWithFallback(prompt);
+            questions = safeParse(raw);
+        } catch (Exception e) {
+            log.error("❌ LLM generation failed: {}", e.getMessage());
+            questions = fallback(topic, difficulty, totalCount);
         }
 
         List<Map<String, Object>> finalQs =
-                allQuestions.size() > totalCount ?
-                        allQuestions.subList(0, totalCount) : allQuestions;
+                questions.size() > totalCount ?
+                        new ArrayList<>(questions.subList(0, totalCount)) : questions;
 
         long latency = Instant.now().toEpochMilli() - start.toEpochMilli();
         log.info("🎯 Completed topic='{}' Qs={} latency={}ms",
@@ -101,15 +94,80 @@ public class LLMService {
     }
 
     // ------------------------------------------------------------------------
-    // ✂️ FIXED 50,000 CHAR CHUNKS
+    // 🔎 Lightweight retrieval — keyword-scored passage selection
     // ------------------------------------------------------------------------
-    private List<String> createFixedChunks(String text) {
-        int chunkSize = 100_000;
+    // Tunables: keep the selected context small to bound input tokens.
+    private static final int PASSAGE_SIZE = 1200;        // chars per passage
+    private static final int MAX_CONTEXT_CHARS = 8000;   // total budget sent to the LLM
+
+    /**
+     * Split the document into passages, score each against the topic, and return
+     * the highest-scoring passages concatenated up to MAX_CONTEXT_CHARS. If the
+     * document already fits the budget, it is returned as-is. If no passage matches
+     * the topic, the leading passages are used (preserves original order).
+     */
+    private String selectRelevantContext(String text, String topic) {
+        if (text.length() <= MAX_CONTEXT_CHARS) {
+            return text;
+        }
+
+        List<String> passages = splitIntoPassages(text);
+        Set<String> topicTerms = tokenize(topic);
+
+        // Index preserved so equal scores keep document order (stable selection).
+        List<int[]> scored = new ArrayList<>(); // [index, score]
+        for (int i = 0; i < passages.size(); i++) {
+            scored.add(new int[]{i, scorePassage(passages.get(i), topicTerms)});
+        }
+        // Sort by score desc, then by original index asc.
+        scored.sort((a, b) -> a[1] != b[1] ? Integer.compare(b[1], a[1]) : Integer.compare(a[0], b[0]));
+
+        StringBuilder sb = new StringBuilder();
+        for (int[] s : scored) {
+            String passage = passages.get(s[0]);
+            if (sb.length() + passage.length() + 2 > MAX_CONTEXT_CHARS) break;
+            sb.append(passage).append("\n\n");
+        }
+
+        String selected = sb.toString().trim();
+        // Safety net: if nothing was added (e.g. first passage alone exceeds budget),
+        // fall back to a hard slice of the budget.
+        return selected.isEmpty()
+                ? text.substring(0, Math.min(MAX_CONTEXT_CHARS, text.length()))
+                : selected;
+    }
+
+    private List<String> splitIntoPassages(String text) {
         List<String> list = new ArrayList<>();
-        for (int i = 0; i < text.length(); i += chunkSize) {
-            list.add(text.substring(i, Math.min(i + chunkSize, text.length())).trim());
+        for (int i = 0; i < text.length(); i += PASSAGE_SIZE) {
+            list.add(text.substring(i, Math.min(i + PASSAGE_SIZE, text.length())).trim());
         }
         return list;
+    }
+
+    /** Number of topic-term occurrences in the passage (case-insensitive). */
+    private int scorePassage(String passage, Set<String> topicTerms) {
+        if (topicTerms.isEmpty()) return 0;
+        String lower = passage.toLowerCase();
+        int score = 0;
+        for (String term : topicTerms) {
+            int idx = 0;
+            while ((idx = lower.indexOf(term, idx)) >= 0) {
+                score++;
+                idx += term.length();
+            }
+        }
+        return score;
+    }
+
+    /** Split a topic into lowercase terms longer than 2 chars. */
+    private Set<String> tokenize(String topic) {
+        Set<String> terms = new LinkedHashSet<>();
+        if (topic == null) return terms;
+        for (String t : topic.toLowerCase().split("[^a-z0-9]+")) {
+            if (t.length() > 2) terms.add(t);
+        }
+        return terms;
     }
 
     // ------------------------------------------------------------------------
@@ -197,7 +255,12 @@ public class LLMService {
         Map<String, Object> body = Map.of(
                 "contents", List.of(Map.of(
                         "parts", List.of(Map.of("text", prompt))
-                ))
+                )),
+                // Bound output size + keep generation focused → fewer billed tokens.
+                "generationConfig", Map.of(
+                        "maxOutputTokens", MAX_OUTPUT_TOKENS,
+                        "temperature", 0.35
+                )
         );
 
         ResponseEntity<Map> res =

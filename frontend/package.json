@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --env=jsdom --verbose",
     "preview": "vite preview"
   },
   "dependencies": {

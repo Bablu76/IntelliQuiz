@@ -95,10 +95,34 @@ public class QuizController {
                 log.info("🆕 New topic → starting at user-selected difficulty '{}'", difficulty);
             }
 
-            // 🧩 3. Generate questions
+            // 🧩 3. Cache check — skip the (paid) LLM call if we already
+            //        generated a quiz for an identical request.
+            String contentHash = computeContentHash(context, topic, adaptiveDiff, questionCount);
+            var cachedOpt = generatedQuizRepository.findFirstByContentHashOrderByGeneratedAtDesc(contentHash);
+            if (cachedOpt.isPresent()) {
+                GeneratedQuiz cached = cachedOpt.get();
+                List<Map<String, Object>> cachedQuestions = mapper.readValue(
+                        cached.getQuestionsJson(),
+                        new com.fasterxml.jackson.core.type.TypeReference<>() {});
+
+                Map<String, Object> cachedResponse = new LinkedHashMap<>();
+                cachedResponse.put("topic", topic);
+                cachedResponse.put("difficulty", adaptiveDiff);
+                cachedResponse.put("questionsGenerated", cachedQuestions.size());
+                cachedResponse.put("generationTimeMs", Instant.now().toEpochMilli() - start.toEpochMilli());
+                cachedResponse.put("cached", true);
+                cachedResponse.put("questions", cachedQuestions);
+                cachedResponse.put("quizId", cached.getId());
+
+                log.info("♻️ Cache HIT | topic='{}' | difficulty='{}' | quizId={} — skipped LLM call",
+                        topic, adaptiveDiff, cached.getId());
+                return ResponseEntity.ok(cachedResponse);
+            }
+
+            // 🧩 4. Generate questions (cache miss)
             var questions = llmService.generateQuestions(topic, adaptiveDiff, context, questionCount);
 
-            // 🧩 4. Persist generated quiz
+            // 🧩 5. Persist generated quiz
             GeneratedQuiz generatedQuiz = null;
             if (user != null) {
                 String json = mapper.writeValueAsString(questions);
@@ -107,6 +131,7 @@ public class QuizController {
                 generatedQuiz.setTopic(topic);
                 generatedQuiz.setDifficulty(adaptiveDiff);
                 generatedQuiz.setQuestionsJson(json);
+                generatedQuiz.setContentHash(contentHash);
                 generatedQuizRepository.save(generatedQuiz);
             }
 
@@ -274,6 +299,26 @@ public class QuizController {
         } catch (Exception e) {
             log.error("❌ Failed to fetch quiz attempts: {}", e.getMessage());
             return ResponseEntity.internalServerError().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // 🔑 Content fingerprint for quiz caching (SHA-256)
+    // -------------------------------------------------------------------------
+    private String computeContentHash(String context, String topic, String difficulty, int questionCount) {
+        try {
+            String seed = (topic == null ? "" : topic.trim().toLowerCase()) + "|"
+                    + (difficulty == null ? "" : difficulty.trim().toLowerCase()) + "|"
+                    + questionCount + "|"
+                    + (context == null ? "" : context);
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] digest = md.digest(seed.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : digest) sb.append(String.format("%02x", b));
+            return sb.toString();
+        } catch (Exception e) {
+            log.warn("⚠️ Failed to compute content hash, caching disabled for this request: {}", e.getMessage());
+            return null; // null hash → lookup misses, behaves like no cache
         }
     }
 

@@ -50,6 +50,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- 🧪 H2 embedded DB — used by the 'local' profile so the app can run without Postgres -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- 🔐 JWT (JSON Web Token) -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

@@ -22,8 +22,14 @@ public class GeneratedQuiz {
     private String topic;
     private String difficulty;
 
-    @Column(length = 10000)
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String questionsJson;
+
+    // 🔑 Fingerprint of (content + topic + difficulty + questionCount).
+    // Lets us reuse a previously generated quiz instead of paying for the LLM again.
+    @Column(length = 64)
+    private String contentHash;
 
     private Instant generatedAt = Instant.now();
 }
